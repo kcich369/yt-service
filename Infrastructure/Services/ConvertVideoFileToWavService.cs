@@ -49,7 +49,7 @@ public sealed class ConvertVideoFileToWavService : MessagePublisherService<Video
         if (convertingResult.IsError) //todo: log errors
             return Result<bool>.Error(convertingResult);
 
-        ytVideoFile.AddWavFile(YtVideoFileWav.Create(ytVideoFile.PathData.MainPath, ytVideoFile.PathData.DirectoryName)
+        ytVideoFile.AddWavFile(YtVideoFileWav.Create(ytVideoFile.PathData.MainPath)
             .SetFileName(ytVideoFile.PathData.FileName));
         await _unitOfWork.SaveChangesAsync(token);
         await Publish(new VideoConverted(ytVideoFile.WavFile.Id));

@@ -1,8 +1,6 @@
-﻿using Domain.Factories;
-using Domain.Helpers;
+﻿using Domain.Helpers;
 using Domain.Providers;
 using Domain.Services;
-using Infrastructure.Factories;
 using Infrastructure.Helpers;
 using Infrastructure.Mappers;
 using Infrastructure.Providers;
@@ -15,7 +13,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection RegisterInfrastructure(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<IYtVideoFileFactory, YtVideoFileFactory>();
         serviceCollection.AddSingleton<IDateProvider, DateProvider>();
         serviceCollection.AddSingleton<IPathProvider, PathProvider>();
         serviceCollection.AddSingleton<IDirectoryProvider, DirectoryProvider>();

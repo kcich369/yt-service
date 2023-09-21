@@ -21,8 +21,8 @@ public sealed class PathProvider : IPathProvider
     public string GetFileName(string ytVideDirectoryName, string quality, string extension) =>
         $"{ytVideDirectoryName}_{quality}.{extension}";
 
-    public string GetVideoFilePath(string channelName, string ytVideDirectoryName, string quality, string extension) =>
-        $"{GetVideoDirectoryPath(channelName, ytVideDirectoryName)}\\{ytVideDirectoryName}_{quality}.{extension}";
+    public string GetVideoFilePath(string mainPath, string fileName, string extension) =>
+        $"{mainPath}\\{fileName}.{extension}";
 
     public string GetVideoTranscriptionDirectoryPath(string channelName, string ytVideDirectoryName)=>
         $"{GetVideoDirectoryPath(channelName, ytVideDirectoryName)}\\{_filesDataConfiguration.Transcriptions}";

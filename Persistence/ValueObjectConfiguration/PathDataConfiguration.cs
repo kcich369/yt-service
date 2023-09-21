@@ -13,10 +13,10 @@ public static class PathDataConfiguration
     {
         ow.Property(x => x.MainPath).IsRequired().HasMaxLength(150)
             .HasColumnName(GetName(nameof(PathData.MainPath)));
-        ow.Property(x => x.DirectoryName).IsRequired().HasMaxLength(150)
-            .HasColumnName(GetName(nameof(PathData.DirectoryName)));
         ow.Property(x => x.FileName).IsRequired().HasMaxLength(150)
             .HasColumnName(GetName(nameof(PathData.FileName)));
+        ow.Property(x => x.FileExtension).IsRequired().HasMaxLength(10)
+            .HasColumnName(GetName(nameof(PathData.FileExtension)));
         return ow;
     }
     private static string GetName(string name) => $"Path_{name}";

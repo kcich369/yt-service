@@ -61,27 +61,28 @@ internal sealed class YtService : IYtService
 
     public async Task<IResult<bool>> GetYtVideoClosedCaptions(VideoData videoData, CancellationToken token)
     {
-        try
-        {
-            var trackManifest = await _ytClientFactory.GetYtClient().Videos.ClosedCaptions
-                .GetManifestAsync(videoData.Url, token);
-
-            var track = await _ytClientFactory.GetYtClient().Videos.ClosedCaptions
-                .GetAsync(trackManifest.GetByLanguage(videoData.LanguageCulture?.Take(2).ToString() ?? string.Empty),
-                    token);
-
-            var transcriptionPath = _pathProvider.GetRelativePath(
-                _pathProvider.GetVideoTranscriptionDirectoryPath(videoData.ChannelDirectoryName,
-                    videoData.VideoDirectoryName));
-            _directoryProvider.CreateIfNotExists(transcriptionPath);
-            await File.AppendAllLinesAsync($"transcriptionPath{videoData.VideoDirectoryName}.txt",
-                track.Captions.Select(x => x.Text), token);
-            return Result<bool>.Success(true);
-        }
-        catch (Exception e)
-        {
-            return Result<bool>.Error(ErrorTypesEnums.Exception, e.Message);
-        }
+        // try
+        // {
+        //     var trackManifest = await _ytClientFactory.GetYtClient().Videos.ClosedCaptions
+        //         .GetManifestAsync(videoData.Url, token);
+        //
+        //     var track = await _ytClientFactory.GetYtClient().Videos.ClosedCaptions
+        //         .GetAsync(trackManifest.GetByLanguage(videoData.LanguageCulture?.Take(2).ToString() ?? string.Empty),
+        //             token);
+        //
+        //     var transcriptionPath = _pathProvider.GetRelativePath(
+        //         _pathProvider.GetVideoTranscriptionDirectoryPath(videoData.ChannelDirectoryName,
+        //             videoData.VideoDirectoryName));
+        //     _directoryProvider.CreateIfNotExists(transcriptionPath);
+        //     await File.AppendAllLinesAsync($"transcriptionPath{videoData.VideoDirectoryName}.txt",
+        //         track.Captions.Select(x => x.Text), token);
+        //     return Result<bool>.Success(true);
+        // }
+        // catch (Exception e)
+        // {
+        //     return Result<bool>.Error(ErrorTypesEnums.Exception, e.Message);
+        // }
+        throw new NotImplementedException();
     }
 
     public async Task<Result<YtVideoFileInfo>> DownloadYtVideoFile(VideoData videData, CancellationToken token)
@@ -90,25 +91,19 @@ internal sealed class YtService : IYtService
         {
             var streamInfo = SelectAudioOnlyStream(await _ytClientFactory.GetYtClient().Videos.Streams
                 .GetManifestAsync(videData.Url, token), videData.Quality);
-            var videoFilePath = PrepareDirectoryAndPath(videData, streamInfo);
+            _directoryProvider.CreateIfNotExists(_pathProvider.GetRelativePath(videData.MainPath));
+            var fileName = $"{videData.YtId}_{videData.Quality}";
             await _ytClientFactory.GetYtClient().Videos.Streams.DownloadAsync(streamInfo,
-                _pathProvider.GetRelativePath(videoFilePath), null, token);
-            return Result<YtVideoFileInfo>.Success(new YtVideoFileInfo(videoFilePath, streamInfo.Size.Bytes,
-                streamInfo.Container.ToString()));
+                _pathProvider.GetRelativePath(_pathProvider.GetVideoFilePath(videData.MainPath,
+                    fileName, streamInfo.Container.ToString())), null, token);
+
+            return Result<YtVideoFileInfo>.Success(new YtVideoFileInfo(fileName, streamInfo.Container.ToString(),
+                streamInfo.Size.Bytes));
         }
         catch (Exception e)
         {
             return Result<YtVideoFileInfo>.Error(ErrorTypesEnums.Exception, e.Message);
         }
-    }
-
-    private string PrepareDirectoryAndPath(VideoData videData, IStreamInfo streamInfo)
-    {
-        var videoDirectoryPath = _pathProvider.GetVideoDirectoryPath(videData.ChannelDirectoryName,
-            videData.VideoDirectoryName);
-        _directoryProvider.CreateIfNotExists(_pathProvider.GetRelativePath(videoDirectoryPath));
-        return _pathProvider.GetVideoFilePath(videData.ChannelDirectoryName, videData.VideoDirectoryName,
-            videData.Quality, streamInfo.Container.ToString());
     }
 
     private static IStreamInfo SelectAudioOnlyStream(StreamManifest streamManifests, string quality)

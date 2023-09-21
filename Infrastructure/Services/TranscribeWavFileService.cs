@@ -45,7 +45,7 @@ public sealed class TranscribeWavFileService : MessagePublisherService<VideoTran
             return Result<bool>.Error(transcriptionPathResult);
 
         ytVideoFileWav.AddTranscription(YtVideoTranscription
-            .Create(ytVideoFileWav.PathData.MainPath, ytVideoFileWav.PathData.DirectoryName)
+            .Create(ytVideoFileWav.PathData.MainPath)
             .SetFileName(transcriptionPathResult.Data));
         await _unitOfWork.SaveChangesAsync(token);
         await Publish(new VideoTranscribed(ytVideoFileWav.YtVideoTranscription.Id));

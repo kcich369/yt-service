@@ -23,13 +23,13 @@ public sealed class YtVideoTranscription : Entity<YtVideoTranscriptionId>, ICrea
     {
     }
     
-    private YtVideoTranscription(string mainPath, string directoryName)
+    private YtVideoTranscription(string mainPath)
     {
-        PathData = new PathData(mainPath, directoryName);
+        PathData = new PathData(mainPath);
     }
 
-    public static YtVideoTranscription Create(string mainPath, string directoryName) =>
-        new(mainPath, directoryName);
+    public static YtVideoTranscription Create(string mainPath) =>
+        new(mainPath);
 
     public void SetCreationData(DateTimeOffset createdAt, UserId createdById, string createdBy)
     {
@@ -40,7 +40,7 @@ public sealed class YtVideoTranscription : Entity<YtVideoTranscriptionId>, ICrea
 
     public YtVideoTranscription SetFileName(string fileName)
     {
-        PathData.SetFileName(fileName);
+        PathData.SetFileName(fileName, "txt");
         return this;
     }
     
