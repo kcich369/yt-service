@@ -16,7 +16,6 @@ public class YtVideoFilesConfiguration : EntityConfiguration<YtVideoFile, YtVide
 
     protected override void ConfigureEntity(EntityTypeBuilder<YtVideoFile> builder)
     {
-        builder.Property(x => x.Extension).HasMaxLength(15);
         builder.OwnsOne(x => x.PathData, ow => ow.ConfigurePathData());
 
         builder.HasOne(x => x.Video)

@@ -1,3 +1,3 @@
 ﻿namespace ExternalServices.Dto;
 
-public sealed record YtVideoFileInfo(string Path, long Bytes, string Extension);
+public sealed record YtVideoFileInfo(string FileName, string Extension, long Bytes);

@@ -23,24 +23,21 @@ namespace Infrastructure.Services;
 public class DownloadYtVideoFilesService : MessagePublisherService<VideoDownloaded>, IDownloadYtVideoFilesService
 {
     private readonly IYtVideoRepository _ytVideoRepository;
-    private readonly IDateProvider _dateProvider;
     private readonly IYtService _ytService;
-    private readonly VideoFileSavingConfiguration _fileSavingConfiguration;
+    private readonly FilesDataConfiguration _filesDataConfiguration;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DownloadYtVideoFilesService> _logger;
 
     public DownloadYtVideoFilesService(IYtVideoRepository ytVideoRepository,
-        IDateProvider dateProvider,
         IYtService ytService,
-        VideoFileSavingConfiguration fileSavingConfiguration,
+        FilesDataConfiguration filesDataConfiguration,
         IUnitOfWork unitOfWork,
         ILogger<DownloadYtVideoFilesService> logger,
         IMessagePublisher publisher) : base(publisher)
     {
         _ytVideoRepository = ytVideoRepository;
-        _dateProvider = dateProvider;
         _ytService = ytService;
-        _fileSavingConfiguration = fileSavingConfiguration;
+        _filesDataConfiguration = filesDataConfiguration;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -52,25 +49,27 @@ public class DownloadYtVideoFilesService : MessagePublisherService<VideoDownload
             return Result<bool>.Error(ErrorTypesEnums.BadRequest, $"Yt video with given id {ytVideoId} does not exist.")
                 .LogErrorMessage(_logger);
         if (!ytVideo.Process)
-            return Result<bool>.Error(ErrorTypesEnums.BadRequest, $"Yt video with given id {ytVideoId} can not be processed.")
+            return Result<bool>.Error(ErrorTypesEnums.BadRequest,
+                    $"Yt video with given id {ytVideoId} can not be processed.")
                 .LogErrorMessage(_logger);
-        
+
         var existedQualities = ytVideo.Files.Select(x => x.Quality).ToList();
+        var mainPath = $@"{_filesDataConfiguration.Path}\{ytVideo.Channel.Name}\{ytVideo.YtId}";
 
         foreach (var quality in Enumeration.GetAll<VideoQualityEnum>())
         {
             if (existedQualities.Contains(quality.Name))
                 continue;
-            var downloadedResult = await _ytService.DownloadYtVideoFile(
-                new VideoData(ytVideo.Url, quality.Name, ytVideo.Channel.Name, ytVideo.Name), token);
+            var downloadedResult =
+                await _ytService.DownloadYtVideoFile(new VideoData(ytVideo.Url, quality.Name, mainPath,ytVideo.YtId), token);
             if (downloadedResult
                 .LogErrorMessage(_logger, $"Downloading video error: ytVideoId {ytVideoId} and quality {quality}.")
                 .IsError)
                 continue;
 
-            ytVideo.AddFile(YtVideoFile.Create("", quality, ytVideo.Channel.Name, ytVideo.Name)
-                .SetFileInfo(downloadedResult.Data.Path, downloadedResult.Data.Path, downloadedResult.Data.Bytes,
-                    downloadedResult.Data.Extension));
+            ytVideo.AddFile(YtVideoFile.Create(mainPath, quality)
+                .SetFileInfo(downloadedResult.Data.FileName, downloadedResult.Data.Extension,
+                    downloadedResult.Data.Bytes));
         }
 
         await Publish(ytVideo.Process

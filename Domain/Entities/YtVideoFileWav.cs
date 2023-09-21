@@ -24,13 +24,13 @@ public sealed class YtVideoFileWav : Entity<YtVideoFileWavId>, ICreated
     {
     }
 
-    private YtVideoFileWav(string mainPath, string directoryName)
+    private YtVideoFileWav(string mainPath)
     {
-        PathData = new PathData(mainPath, directoryName);
+        PathData = new PathData(mainPath);
     }
 
-    public static YtVideoFileWav Create(string mainPath, string directoryName) =>
-        new(mainPath, directoryName);
+    public static YtVideoFileWav Create(string mainPath) =>
+        new(mainPath);
 
     public void SetCreationData(DateTimeOffset createdAt, UserId createdById, string createdBy)
     {
@@ -47,7 +47,7 @@ public sealed class YtVideoFileWav : Entity<YtVideoFileWavId>, ICreated
 
     public YtVideoFileWav SetFileName(string fileName)
     {
-        PathData.SetFileName(fileName);
+        PathData.SetFileName(fileName, "wav");
         return this;
     }
 

@@ -18,8 +18,6 @@ public sealed class YtVideoFile : Entity<YtVideoFileId>, ICreated, IUpdated
     public string UpdatedBy { get; private set; }
     public int Retries { get; private set; }
     public long Bytes { get; private set; }
-    public string Extension { get; private set; }
-
     public bool Process { get; private set; }
 
 
@@ -32,23 +30,15 @@ public sealed class YtVideoFile : Entity<YtVideoFileId>, ICreated, IUpdated
     {
     }
 
-    private YtVideoFile(string pathValue, VideoQualityEnum quality, string channelDirectory,
-        string videoDirectory, YtVideoId ytVideoId = null)
+    private YtVideoFile(string pathValue,  VideoQualityEnum quality)
     {
         Id = new YtVideoFileId(Ulid.NewUlid().ToString());
         Quality = quality.Name;
-        if (ytVideoId is not null)
-            VideoId = ytVideoId;
-        PathData = new PathData(pathValue, channelDirectory);
+        PathData = new PathData(pathValue);
     }
 
-    public static YtVideoFile Create(string path, VideoQualityEnum quality, string channelDirectory,
-        string videoDirectory, YtVideoId ytVideoId) =>
-        new(path, quality, channelDirectory, videoDirectory);
-
-    public static YtVideoFile Create(string path, VideoQualityEnum quality, string channelDirectory,
-        string videoDirectory) =>
-        new(path, quality, channelDirectory, videoDirectory);
+    public static YtVideoFile Create(string path, VideoQualityEnum quality) =>
+        new(path, quality);
 
     public void SetCreationData(DateTimeOffset createdAt, UserId createdById, string createdBy)
     {
@@ -70,17 +60,10 @@ public sealed class YtVideoFile : Entity<YtVideoFileId>, ICreated, IUpdated
         return this;
     }
 
-    public YtVideoFile SetFileInfo(string mainPath, string directoryName, long bytes, string extension)
+    public YtVideoFile SetFileInfo(string fileName, string fileExtension, long bytes)
     {
-        PathData = new PathData(mainPath, directoryName);
+        PathData.SetFileName(fileName, fileExtension);
         Bytes = bytes;
-        Extension = extension;
-        return this;
-    }
-
-    public YtVideoFile SetFileName(string fileName)
-    {
-        PathData.SetFileName(fileName);
         return this;
     }
 
