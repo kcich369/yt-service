@@ -9,8 +9,10 @@ using Domain.UnitOfWork;
 using ExternalServices.Dto;
 using ExternalServices.Interfaces;
 using Hangfire;
+using Infrastructure.Extensions;
 using Infrastructure.Mappers;
 using Infrastructure.Services.Base;
+using Microsoft.Extensions.Logging;
 using ServiceBus.Producer.Messages;
 using ServiceBus.Producer.Publisher;
 
@@ -24,19 +26,22 @@ public sealed class CreateYtChannelService : MessagePublisherService<ChannelCrea
     private readonly IYtService _ytService;
     private readonly IDirectoryProvider _directoryProvider;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<CreateYtChannelService> _logger;
 
     public CreateYtChannelService(IYtChannelRepository ytChannelRepository,
         IPathProvider pathProvider,
         IYtService ytService,
         IDirectoryProvider directoryProvider,
         IUnitOfWork unitOfWork,
-        IMessagePublisher publisher) : base(publisher)
+        IMessagePublisher publisher,
+        ILogger<CreateYtChannelService> logger) : base(publisher)
     {
         _ytChannelRepository = ytChannelRepository;
         _pathProvider = pathProvider;
         _ytService = ytService;
         _directoryProvider = directoryProvider;
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task<IResult<YtChannelVideosDto>> Execute(string name, bool downloadByCustomUrl,
@@ -50,8 +55,8 @@ public sealed class CreateYtChannelService : MessagePublisherService<ChannelCrea
                 .TryCatch())
             .Next((res) => _unitOfWork.SaveChangesAsync(token).TryCatch());
 
-        if (createChannelResult.IsError) //todo: log errors
-            Result<YtChannelVideosDto>.Error(createChannelResult);
+        if (createChannelResult.IsError)
+            Result<YtChannelVideosDto>.Error(createChannelResult).LogErrorMessage(_logger);
 
         _directoryProvider.CreateIfNotExists(_pathProvider.GetChannelPath(channel.Data.Name));
         await Publish(new ChannelCreated(newChannelId.ToString()));
