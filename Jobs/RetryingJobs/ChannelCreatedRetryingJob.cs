@@ -23,6 +23,8 @@ internal sealed class ChannelCreatedRetryingJob : MessagePublisherService<Channe
     public async Task Execute()
     {
         var channels = await _dbContext.Set<YtChannel>()
+            .Include(x=>x.Videos)
+            .Where(x=>!x.Videos.Any())
             .Select(x => new ChannelCreated(x.Id))
             .ToListAsync();
         await Publish(channels);

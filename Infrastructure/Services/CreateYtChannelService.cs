@@ -57,8 +57,8 @@ public sealed class CreateYtChannelService : MessagePublisherService<ChannelCrea
 
         if (createChannelResult.IsError)
             Result<YtChannelVideosDto>.Error(createChannelResult).LogErrorMessage(_logger);
-
-        _directoryProvider.CreateIfNotExists(_pathProvider.GetChannelPath(channel.Data.Name));
+        
+        _directoryProvider.CreateIfNotExists(_pathProvider.GetRelativePath(_pathProvider.GetChannelPath(channel.Data.Name)));
         await Publish(new ChannelCreated(newChannelId.ToString()));
         return Result<YtChannelVideosDto>.Success(new YtChannelVideosDto(newChannelId, channel.Data.Name,
             channel.Data.YtId, null));

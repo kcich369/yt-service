@@ -22,7 +22,7 @@ public abstract class MessagePublisherService<T> where T : IMessage
     protected async Task Publish(IEnumerable<T> messages)
     {
         messages = messages.ToList();
-        if(messages.Any())
+        if(!messages.Any())
             return;
         foreach (var message in messages)
         {
