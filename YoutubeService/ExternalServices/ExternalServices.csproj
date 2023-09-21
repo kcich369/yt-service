@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="VideoLibrary" Version="3.2.3" />
+        <PackageReference Include="YoutubeReExplode" Version="7.1.2" />
+        <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.31.0" />
+        <PackageReference Include="Standard.AI.OpenAI" Version="0.6.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Domain\Domain.csproj" />
+    </ItemGroup>
+
+</Project>
