@@ -46,13 +46,13 @@ public sealed class AddChannelVideosService : MessagePublisherService<NewVideoCr
     {
         var ytChannel = await _ytChannelRepository.GetWithVideos(ytChannelId, _configuration.Amount, token);
         if (ytChannel is null)
-            return Result<bool>.Error(ErrorTypesEnums.NotFound, "Yt channel with given id does not exist")
+            return Result<bool>.Error(ErrorTypesEnums.NotFound, $"Yt channel with given id {ytChannelId} does not exist")
                 .LogErrorMessage(_logger);
         var allVideosResult = await _ytService.GetChannelVideos(ytChannel.Url, null, token);
         if (allVideosResult.IsError)
             return Result<bool>.Error(allVideosResult).LogErrorMessage(_logger);
-
-        var newVideos = allVideosResult.Data
+        
+        var newVideos = allVideosResult.Data.ToList()
             .Select(x => YtVideo.Create(x.Name, x.YtId, x.Url, x.Duration, ytChannel.Id))
             .Where(x => x.Duration is not null)
             .Except(ytChannel.Videos, new YtVideoComparer())
@@ -60,7 +60,7 @@ public sealed class AddChannelVideosService : MessagePublisherService<NewVideoCr
 
         ytChannel.AddVideos(newVideos);
         await _unitOfWork.SaveChangesAsync(token);
-        await Publish(newVideos.Select(x => new NewVideoCreated(x.Id)));
+        await Publish(newVideos.Where(x=>x.Process).Select(x => new NewVideoCreated(x.Id)));
         
         return Result<bool>.Success(true);
     }

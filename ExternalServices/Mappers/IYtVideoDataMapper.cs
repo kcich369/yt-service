@@ -6,5 +6,5 @@ namespace ExternalServices.Mappers;
 
 internal interface IYtVideoDataMapper
 {
-    Task<IEnumerable<YtVideoData>> Map(IAsyncEnumerable<PlaylistVideo> ytVideos, int? amount, CancellationToken token);
+    Task<IList<YtVideoData>> Map(IAsyncEnumerable<PlaylistVideo> ytVideos, int? amount, CancellationToken token);
 }

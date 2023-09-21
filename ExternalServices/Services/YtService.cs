@@ -48,14 +48,16 @@ internal sealed class YtService : IYtService
         catch (Exception e)
         {
             return e.Message.Contains("404 (Not Found)")
-                ? Result<YtChannelData>.Error(ErrorTypesEnums.NotFound, "Channel with given name does not exist.")
+                ? Result<YtChannelData>.Error(ErrorTypesEnums.NotFound,
+                    $"Channel with given name: {ytChannelName} does not exist.")
                 : Result<YtChannelData>.Error(ErrorTypesEnums.Exception, e.Message);
         }
     }
 
-    public async Task<IResult<IEnumerable<YtVideoData>>> GetChannelVideos(string ytChannelUrl, int? amount,
-        CancellationToken token) => Result<IEnumerable<YtVideoData>>.Success(await _dataMapper.Map(
-        _ytClientFactory.GetYtClient().Channels.GetUploadsAsync(ytChannelUrl, token), amount, token));
+    public async Task<IResult<IList<YtVideoData>>> GetChannelVideos(string ytChannelUrl, int? amount,
+        CancellationToken token) => Result<IList<YtVideoData>>.Success(
+        await _dataMapper.Map(_ytClientFactory.GetYtClient().Channels.GetUploadsAsync(ytChannelUrl, token), amount,
+            token));
 
     public async Task<IResult<bool>> GetYtVideoClosedCaptions(VideoData videoData, CancellationToken token)
     {
