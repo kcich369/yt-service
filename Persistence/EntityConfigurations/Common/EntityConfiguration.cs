@@ -27,6 +27,7 @@ public abstract class EntityConfiguration<T, TId> : IEntityTypeConfiguration<T>
         builder.ToTable(_tableName);
         builder.HasKey(x => x.Id);
         builder.HasQueryFilter(x => !x.Deleted);
+        builder.Property(x => x.Version).IsConcurrencyToken();
 
         builder.SetAuditablePropertiesDbConstraints();
         builder.SetConverters();
