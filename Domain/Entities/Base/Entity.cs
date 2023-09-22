@@ -1,7 +1,6 @@
-﻿using Domain.EntityIds;
-using Domain.EntityIds.Base;
+﻿using Domain.EntityIds.Base;
 
-namespace Domain.Abstractions;
+namespace Domain.Entities.Base;
 
 public abstract class Entity<TId> : IEntity where TId : EntityId
 {

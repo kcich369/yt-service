@@ -1,4 +1,4 @@
-﻿using Domain.Abstractions;
+﻿using Domain.Entities.Base;
 using Domain.EntityIds;
 using Domain.EntityIds.Base;
 using Domain.Exceptions;

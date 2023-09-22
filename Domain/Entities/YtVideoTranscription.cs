@@ -1,5 +1,5 @@
-﻿using Domain.Abstractions;
-using Domain.Auditable;
+﻿using Domain.Auditable;
+using Domain.Entities.Base;
 using Domain.EntityIds;
 using Domain.ValueObjects;
 

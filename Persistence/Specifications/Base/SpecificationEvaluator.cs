@@ -1,4 +1,4 @@
-﻿using Domain.Abstractions;
+﻿using Domain.Entities.Base;
 using Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Persistence.QueryableExtensions;
