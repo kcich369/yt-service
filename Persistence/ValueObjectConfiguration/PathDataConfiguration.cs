@@ -1,4 +1,4 @@
-﻿using Domain.Abstractions;
+﻿using Domain.Entities.Base;
 using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

@@ -1,13 +1,13 @@
-﻿using Domain.EntityIds;
-using Domain.EntityIds.Base;
+﻿using Domain.EntityIds.Base;
 
-namespace Domain.Abstractions;
+namespace Domain.Entities.Base;
 
 public abstract class Entity<TId> : IEntity where TId : EntityId
 {
     public TId Id { get; protected init; }
 
     public bool Deleted { get; protected set; }
+    public int Version { get; protected set; }
 
     protected Entity()
     {

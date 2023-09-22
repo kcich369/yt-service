@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using Domain.Abstractions;
+using Domain.Entities.Base;
 
 namespace Persistence.Specifications.Base;
 
