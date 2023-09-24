@@ -17,6 +17,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(26)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    Handle = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     YtId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Url = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -25,7 +26,7 @@ namespace Persistence.Migrations
                     UpdatedById = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    Version = table.Column<int>(type: "int", nullable: false)
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -51,7 +52,7 @@ namespace Persistence.Migrations
                     LanguageCulture = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
                     ChannelId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    Version = table.Column<int>(type: "int", nullable: false)
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -84,7 +85,7 @@ namespace Persistence.Migrations
                     Process = table.Column<bool>(type: "bit", nullable: false),
                     VideoId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    Version = table.Column<int>(type: "int", nullable: false)
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -112,7 +113,7 @@ namespace Persistence.Migrations
                     Process = table.Column<bool>(type: "bit", nullable: false),
                     YtVideoFileId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    Version = table.Column<int>(type: "int", nullable: false)
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -139,7 +140,7 @@ namespace Persistence.Migrations
                     Process = table.Column<bool>(type: "bit", nullable: false),
                     WavFileId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    Version = table.Column<int>(type: "int", nullable: false)
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -164,7 +165,7 @@ namespace Persistence.Migrations
                     YtVideoTranscriptionId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     YtVideoId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    Version = table.Column<int>(type: "int", nullable: false)
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -194,7 +195,7 @@ namespace Persistence.Migrations
                     YtVideoTranscriptionId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     YtVideoId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    Version = table.Column<int>(type: "int", nullable: false)
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -212,9 +213,9 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_YtChannels_Name",
+                name: "IX_YtChannels_YtId",
                 table: "YtChannels",
-                column: "Name");
+                column: "YtId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_YtVideoDescriptions_YtVideoId",

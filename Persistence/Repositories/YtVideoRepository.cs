@@ -30,8 +30,9 @@ public sealed class YtVideoRepository : IYtVideoRepository
         .ApplySelectedSpecification(new GetByIdSelectedSpecification(id))
         .FirstOrDefaultAsync(token);
 
-    public async Task<YtVideo> GetWithVideos(YtVideoId id, CancellationToken token) => await _dbContext
+    public async Task<YtVideo> GetForDownloading(YtVideoId id, CancellationToken token) => await _dbContext
         .Set<YtVideo>()
+        .Include(x => x.Channel)
         .Include(x => x.Files)
         .FirstOrDefaultAsync(x => x.Id == id, token);
 }

@@ -11,6 +11,7 @@ public interface IYtChannelRepository
     Task<YtChannel> GetWithVideos(YtChannelId ytChannel, int amount, CancellationToken token);
     Task<IEnumerable<YtChannelId>> GetAllIds(CancellationToken token);
     Task<bool> Exists(string name, CancellationToken token);
+    Task<bool> YtIdExists(string ytId, CancellationToken token);
 
     Task<YtChannelVideosDto> GetYtVideoChannelWithDownloadedVideoNames(YtChannelId ytChannelId, CancellationToken token);
 }

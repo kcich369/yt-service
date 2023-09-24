@@ -23,10 +23,6 @@ public sealed class
     public async Task<IResult<YtChannelVideosDto>> Handle(CreateYtChannelCommand request,
         CancellationToken cancellationToken)
     {
-        if (await _ytChannelRepository.Exists(request.CreateYtChannelDto.Name, cancellationToken))
-            return Result<YtChannelVideosDto>.Error(ErrorTypesEnums.BadRequest,
-                "Yt channel already exists");
-
         var createChannelResult = await _createYtChannelWithVideosService.Execute(request.CreateYtChannelDto.Name,
             request.CreateYtChannelDto.DownloadByCustomUrl, cancellationToken);
 

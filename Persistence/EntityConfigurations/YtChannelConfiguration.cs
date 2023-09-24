@@ -14,10 +14,10 @@ public class YtChannelConfiguration : EntityConfiguration<YtChannel, YtChannelId
     protected override void ConfigureEntity(EntityTypeBuilder<YtChannel> builder)
     {
         builder.Property(x => x.Name).HasMaxLength(150);
+        builder.Property(x => x.Handle).HasMaxLength(150);
         builder.Property(x => x.YtId).HasMaxLength(100);
         builder.Property(x => x.Url).HasMaxLength(150);
 
-
-        builder.HasIndex(x => x.Name);
+        builder.HasIndex(x => x.YtId);
     }
 }

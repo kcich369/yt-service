@@ -27,12 +27,12 @@ public abstract class EntityConfiguration<T, TId> : IEntityTypeConfiguration<T>
         builder.ToTable(_tableName);
         builder.HasKey(x => x.Id);
         builder.HasQueryFilter(x => !x.Deleted);
-        builder.Property(x => x.Version).IsConcurrencyToken();
+        builder.Property(x => x.Version).IsRowVersion().ValueGeneratedOnAddOrUpdate();
 
         builder.SetAuditablePropertiesDbConstraints();
         builder.SetConverters();
         ConfigureEntity(builder);
-    }
+    } 
 
     protected abstract void ConfigureEntity(EntityTypeBuilder<T> builder);
 }
