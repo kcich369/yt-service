@@ -1,6 +1,7 @@
 ﻿using Domain.Dtos.YtChannel;
 using Domain.Entities;
 using Domain.EntityIds;
+using Domain.Enumerations;
 using Domain.Providers;
 using Domain.Repositories;
 using Domain.Results;
@@ -44,23 +45,31 @@ public sealed class CreateYtChannelService : MessagePublisherService<ChannelCrea
         _logger = logger;
     }
 
-    public async Task<IResult<YtChannelVideosDto>> Execute(string name, bool downloadByCustomUrl,
+    public async Task<IResult<YtChannelVideosDto>> Execute(string name, bool handleName,
         CancellationToken token)
     {
         var newChannelId = new YtChannelId();
-        var createChannelResult = await (await _ytService.GetChannel(name, downloadByCustomUrl, token))
+        var createChannelResult = await (await _ytService.GetChannel(name, handleName, token))
             .ReturnOut(out var channel)
-            .Next((chnl) => _ytChannelRepository
-                .Add(YtChannel.Create(newChannelId, chnl.Data.Name, chnl.Data.YtId, chnl.Data.Url), token)
-                .TryCatch())
+            .Next(chnlRes => Exist(chnlRes.Data.YtId, name, token))
+            .Next((r) => _ytChannelRepository.Add(YtChannel.Create(newChannelId, channel.Data.Name,
+                handleName ? name : null, channel.Data.YtId, channel.Data.Url), token).TryCatch())
             .Next((res) => _unitOfWork.SaveChangesAsync(token).TryCatch());
 
         if (createChannelResult.IsError)
-            Result<YtChannelVideosDto>.Error(createChannelResult).LogErrorMessage(_logger);
-        
-        _directoryProvider.CreateIfNotExists(_pathProvider.GetRelativePath(_pathProvider.GetChannelPath(channel.Data.Name)));
+            return Result<YtChannelVideosDto>.Error(createChannelResult).LogErrorMessage(_logger);
+
+        _directoryProvider.CreateIfNotExists(
+            _pathProvider.GetRelativePath(_pathProvider.GetChannelPath(channel.Data.Name)));
         await Publish(new ChannelCreated(newChannelId.ToString()));
         return Result<YtChannelVideosDto>.Success(new YtChannelVideosDto(newChannelId, channel.Data.Name,
             channel.Data.YtId, null));
     }
+
+    private async Task<IResult<bool>> Exist(string ytId, string name, CancellationToken token) =>
+        await _ytChannelRepository.YtIdExists(ytId, token)
+            ? Result<bool>.Error(ErrorTypesEnums.BadRequest,
+                    $"Yt Channel with given name: {name} and ytId: {ytId} already exists.")
+                .LogErrorMessage(_logger)
+            : Result<bool>.Success(true);
 }

@@ -42,6 +42,10 @@ namespace Persistence.Migrations
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Handle")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
@@ -57,9 +61,10 @@ namespace Persistence.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<int>("Version")
+                    b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("YtId")
                         .HasMaxLength(100)
@@ -67,7 +72,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name");
+                    b.HasIndex("YtId");
 
                     b.ToTable("YtChannels", (string)null);
                 });
@@ -123,9 +128,10 @@ namespace Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("Version")
+                    b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("YtId")
                         .HasMaxLength(100)
@@ -166,9 +172,10 @@ namespace Persistence.Migrations
                     b.Property<bool>("Process")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Version")
+                    b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("YtVideoId")
                         .HasColumnType("nvarchar(26)");
@@ -231,9 +238,10 @@ namespace Persistence.Migrations
                     b.Property<string>("UpdatedById")
                         .HasColumnType("nvarchar(26)");
 
-                    b.Property<int>("Version")
+                    b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("VideoId")
                         .HasColumnType("nvarchar(26)");
@@ -271,9 +279,10 @@ namespace Persistence.Migrations
                     b.Property<bool>("Process")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Version")
+                    b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("YtVideoFileId")
                         .HasColumnType("nvarchar(26)");
@@ -313,9 +322,10 @@ namespace Persistence.Migrations
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Version")
+                    b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("YtVideoId")
                         .HasColumnType("nvarchar(26)");
@@ -359,9 +369,10 @@ namespace Persistence.Migrations
                     b.Property<bool>("Process")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Version")
+                    b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("WavFileId")
                         .HasColumnType("nvarchar(26)");

@@ -44,7 +44,7 @@ public class DownloadYtVideoFilesService : MessagePublisherService<VideoDownload
 
     public async Task<Result<bool>> Download(YtVideoId ytVideoId, CancellationToken token)
     {
-        var ytVideo = await _ytVideoRepository.GetWithVideos(ytVideoId, token);
+        var ytVideo = await _ytVideoRepository.GetForDownloading(ytVideoId, token);
         if (ytVideo is null)
             return Result<bool>.Error(ErrorTypesEnums.BadRequest, $"Yt video with given id {ytVideoId} does not exist.")
                 .LogErrorMessage(_logger);

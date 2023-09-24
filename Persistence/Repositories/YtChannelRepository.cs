@@ -34,7 +34,10 @@ public sealed class YtChannelRepository : IYtChannelRepository
         await _context.Set<YtChannel>().Select(x => x.Id).ToListAsync(token);
 
     public async Task<bool> Exists(string name, CancellationToken token) =>
-        await _context.Set<YtChannel>().AnyAsync(x => x.Name == name, token);
+        await _context.Set<YtChannel>().AnyAsync(x => x.Name == name || x.Handle == name, token);
+
+    public async Task<bool> YtIdExists(string ytId, CancellationToken token) =>
+        await _context.Set<YtChannel>().AnyAsync(x => x.YtId == ytId, token);
 
     public async Task<YtChannelVideosDto> GetYtVideoChannelWithDownloadedVideoNames(YtChannelId ytChannelId,
         CancellationToken token)

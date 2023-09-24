@@ -8,5 +8,5 @@ public interface IYtVideoRepository
 {
     Task<IEnumerable<YtVideoSearchDto>> SearchByQuery(string query, int take, CancellationToken token);
     Task<YtVideoDetailsDto> GetById(YtVideoId id, CancellationToken token);
-    Task<YtVideo> GetWithVideos(YtVideoId id, CancellationToken token);
+    Task<YtVideo> GetForDownloading(YtVideoId id, CancellationToken token);
 }

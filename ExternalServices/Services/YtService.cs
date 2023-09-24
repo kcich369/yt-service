@@ -32,12 +32,12 @@ internal sealed class YtService : IYtService
         _ytServiceConfiguration = ytServiceConfiguration;
     }
 
-    public async Task<IResult<YtChannelData>> GetChannel(string ytChannelName, bool getByCustomUrl,
+    public async Task<IResult<YtChannelData>> GetChannel(string ytChannelName, bool getByHandleName,
         CancellationToken token)
     {
         try
         {
-            var channel = getByCustomUrl
+            var channel = getByHandleName
                 ? await _ytClientFactory.GetYtClient().Channels
                     .GetByHandleAsync($"{_ytServiceConfiguration.YtUrl}{ytChannelName}", token)
                 : await _ytClientFactory.GetYtClient().Channels
