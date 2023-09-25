@@ -2,7 +2,7 @@
 
 namespace Domain.Configurations;
 
-public class AzureServiceConfiguration: IConfiguration
+public sealed class AzureServiceConfiguration: IConfiguration
 {
     public string Key { get; set; }
     public string Region { get; set; }

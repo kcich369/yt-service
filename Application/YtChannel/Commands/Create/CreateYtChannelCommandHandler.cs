@@ -23,8 +23,8 @@ public sealed class
     public async Task<IResult<YtChannelVideosDto>> Handle(CreateYtChannelCommand request,
         CancellationToken cancellationToken)
     {
-        var createChannelResult = await _createYtChannelWithVideosService.Execute(request.CreateYtChannelDto.Name,
-            request.CreateYtChannelDto.DownloadByCustomUrl, cancellationToken);
+        var createChannelResult =
+            await _createYtChannelWithVideosService.Execute(request.CreateYtChannelDto.Name, cancellationToken);
 
         return createChannelResult.IsError
             ? Result<YtChannelVideosDto>.Error(createChannelResult)

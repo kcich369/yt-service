@@ -8,31 +8,31 @@ using Domain.Results;
 using Domain.Services;
 using Domain.UnitOfWork;
 using Hangfire;
-using Infrastructure.Services.Base;
 using ServiceBus.Producer.Messages;
 using ServiceBus.Producer.Publisher;
 
 namespace Infrastructure.Services;
 
 [DisableConcurrentExecution(timeoutInSeconds: 60)]
-public sealed class ConvertVideoFileToWavService : MessagePublisherService<VideoConverted>,
-    IConvertVideoFileToWavService
+public sealed class ConvertVideoFileToWavService : IConvertVideoFileToWavService
 {
     private readonly IYtVideoFileRepository _ytVideoFileRepository;
     private readonly IConvertFileToWavHelper _convertFileToWavHelper;
     private readonly IPathProvider _pathProvider;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMessagePublisher _messagePublisher;
 
     public ConvertVideoFileToWavService(IYtVideoFileRepository ytVideoFileRepository,
         IConvertFileToWavHelper convertFileToWavHelper,
         IPathProvider pathProvider,
         IUnitOfWork unitOfWork,
-        IMessagePublisher publisher) : base(publisher)
+        IMessagePublisher messagePublisher)
     {
         _ytVideoFileRepository = ytVideoFileRepository;
         _convertFileToWavHelper = convertFileToWavHelper;
         _pathProvider = pathProvider;
         _unitOfWork = unitOfWork;
+        _messagePublisher = messagePublisher;
     }
 
     public async Task<IResult<bool>> Convert(YtVideoFileId ytVideoFileId, CancellationToken token)
@@ -52,7 +52,7 @@ public sealed class ConvertVideoFileToWavService : MessagePublisherService<Video
         ytVideoFile.AddWavFile(YtVideoFileWav.Create(ytVideoFile.PathData.MainPath)
             .SetFileName(ytVideoFile.PathData.FileName));
         await _unitOfWork.SaveChangesAsync(token);
-        await Publish(new VideoConverted(ytVideoFile.WavFile.Id));
+        await _messagePublisher.Send(new VideoConverted(ytVideoFile.WavFile.Id));
         return Result<bool>.Success(true);
     }
 }

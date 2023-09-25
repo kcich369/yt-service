@@ -1,5 +1,11 @@
-﻿using ServiceBus.Producer.Messages.Base;
+﻿using Domain.EntityIds;
+using Domain.Messages;
 
 namespace ServiceBus.Producer.Messages;
 
-public sealed record ChannelCreated(string ChannelId) : IMessage;
+public sealed class ChannelCreated : MessageBase<YtChannelId>
+{
+    public ChannelCreated(YtChannelId ytChannelId) : base(ytChannelId)
+    {
+    }
+}
