@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using Hangfire;
-using Infrastructure.Services.Base;
 using Jobs.RetryingJobs.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
@@ -10,14 +9,16 @@ using ServiceBus.Producer.Publisher;
 namespace Jobs.RetryingJobs;
 
 [DisableConcurrentExecution(timeoutInSeconds: 60)]
-internal sealed class LanguageRecognisedRetryingJob : MessagePublisherService<LanguageRecognised>, ILanguageRecognisedRetryingJob
+internal sealed class LanguageRecognisedRetryingJob : ILanguageRecognisedRetryingJob
 {
     private readonly IAppDbContext _dbContext;
+    private readonly IMessagePublisher _messagePublisher;
 
     public LanguageRecognisedRetryingJob(IAppDbContext dbContext,
-        IMessagePublisher messagePublisher) : base(messagePublisher)
+        IMessagePublisher messagePublisher)
     {
         _dbContext = dbContext;
+        _messagePublisher = messagePublisher;
     }
 
     public async Task Execute()
@@ -27,7 +28,7 @@ internal sealed class LanguageRecognisedRetryingJob : MessagePublisherService<La
             .Where(x => x.Process && x.YtVideoTranscription == null)
             .Select(x => new LanguageRecognised(x.Id))
             .ToListAsync();
-        
-        await Publish(transcribeVideos);
+
+        await _messagePublisher.Send(transcribeVideos);
     }
 }

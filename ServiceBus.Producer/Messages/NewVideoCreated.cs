@@ -1,5 +1,11 @@
-﻿using ServiceBus.Producer.Messages.Base;
+﻿using Domain.EntityIds;
+using Domain.Messages;
 
 namespace ServiceBus.Producer.Messages;
 
-public sealed record NewVideoCreated(string YtVideoId) : IMessage;
+public sealed class NewVideoCreated : MessageBase<YtVideoId>
+{
+    public NewVideoCreated(YtVideoId entityId) : base(entityId)
+    {
+    }
+}

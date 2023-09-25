@@ -7,7 +7,6 @@ using Domain.Services;
 using Domain.UnitOfWork;
 using ExternalServices.Interfaces;
 using Hangfire;
-using Infrastructure.Services.Base;
 using ServiceBus.Producer.Messages;
 using ServiceBus.Producer.Publisher;
 

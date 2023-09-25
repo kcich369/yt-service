@@ -2,7 +2,7 @@
 
 namespace Domain.Configurations;
 
-public class ChatGptConfiguration : IConfiguration
+public sealed class ChatGptConfiguration : IConfiguration
 {
     public string ApiKey { get; set; }
     public string OrganizationId { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Domain.EntityIds;
+using Domain.Helpers;
 using Domain.Services;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,11 +17,12 @@ public sealed class VideoDownloadedConsumer : QueueConsumerBackgroundService
     {
     }
 
-    protected override async Task Execute(IServiceProvider serviceProvider, string message, CancellationToken token)
+    protected override async Task Execute(IMessageHelper messageHelper, string message, CancellationToken token)
     {
-        using var scope = serviceProvider.CreateScope();
         var videoDownloaded = JsonSerializer.Deserialize<VideoDownloaded>(message);
+        if(await messageHelper.MessageIsProcessing(videoDownloaded))
+            return;
         BackgroundJob.Enqueue<IConvertVideoFileToWavService>((service) =>
-            service.Convert(new YtVideoFileId(videoDownloaded.YtVideoFileId), token));
+            service.Convert(videoDownloaded.Id, token));
     }
 }

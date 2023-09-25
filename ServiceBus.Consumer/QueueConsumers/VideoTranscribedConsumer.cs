@@ -1,8 +1,7 @@
 ﻿using System.Text.Json;
-using Domain.EntityIds;
+using Domain.Helpers;
 using Domain.Services;
 using Hangfire;
-using Microsoft.Extensions.DependencyInjection;
 using ServiceBus.Consumer.QueueConsumers.Base;
 using ServiceBus.Producer.Enumeration;
 using ServiceBus.Producer.Messages;
@@ -16,11 +15,10 @@ public sealed class VideoTranscribedConsumer : QueueConsumerBackgroundService
     {
     }
 
-    protected override async Task Execute(IServiceProvider serviceProvider, string message, CancellationToken token)
+    protected override async Task Execute(IMessageHelper messageHelper, string message, CancellationToken token)
     {
-        using var scope = serviceProvider.CreateScope();
         var videoTranscribed = JsonSerializer.Deserialize<VideoTranscribed>(message);
         BackgroundJob.Enqueue<ITranscriptionDataService>((service) =>
-            service.Create(new YtVideoTranscriptionId(videoTranscribed.YtVideoTranscriptionId), token));
+            service.Create(videoTranscribed.Id, token));
     }
 }

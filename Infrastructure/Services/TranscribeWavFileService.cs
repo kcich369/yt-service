@@ -7,30 +7,31 @@ using Domain.Services;
 using Domain.UnitOfWork;
 using ExternalServices.Interfaces;
 using Hangfire;
-using Infrastructure.Services.Base;
 using ServiceBus.Producer.Messages;
 using ServiceBus.Producer.Publisher;
 
 namespace Infrastructure.Services;
 
 [DisableConcurrentExecution(timeoutInSeconds: 60)]
-public sealed class TranscribeWavFileService : MessagePublisherService<VideoTranscribed>, ITranscribeWavFileService
+public sealed class TranscribeWavFileService : ITranscribeWavFileService
 {
     private readonly IYtVideoFileWavRepository _videoFileWavRepository;
     private readonly ISpeechToTextService _speechToTextService;
     private readonly ITranscriptionHelper _transcriptionHelper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMessagePublisher _messagePublisher;
 
     public TranscribeWavFileService(IYtVideoFileWavRepository videoFileWavRepository,
         ISpeechToTextService speechToTextService,
         ITranscriptionHelper transcriptionHelper,
         IUnitOfWork unitOfWork,
-        IMessagePublisher publisher) : base(publisher)
+        IMessagePublisher messagePublisher)
     {
         _videoFileWavRepository = videoFileWavRepository;
         _speechToTextService = speechToTextService;
         _transcriptionHelper = transcriptionHelper;
         _unitOfWork = unitOfWork;
+        _messagePublisher = messagePublisher;
     }
 
     public async Task<IResult<bool>> Transcribe(YtVideoFileWavId videoFileWavId, CancellationToken token)
@@ -48,8 +49,8 @@ public sealed class TranscribeWavFileService : MessagePublisherService<VideoTran
             .Create(ytVideoFileWav.PathData.MainPath)
             .SetFileName(transcriptionPathResult.Data));
         await _unitOfWork.SaveChangesAsync(token);
-        await Publish(new VideoTranscribed(ytVideoFileWav.YtVideoTranscription.Id));
-        
+        await _messagePublisher.Send(new VideoTranscribed(ytVideoFileWav.YtVideoTranscription.Id));
+
         return transcriptionPathResult.IsError
             ? Result<bool>.Error(transcriptionPathResult)
             : Result<bool>.Success(true);

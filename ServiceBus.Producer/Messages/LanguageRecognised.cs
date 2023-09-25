@@ -1,5 +1,11 @@
-﻿using ServiceBus.Producer.Messages.Base;
+﻿using Domain.EntityIds;
+using Domain.Messages;
 
 namespace ServiceBus.Producer.Messages;
 
-public sealed record LanguageRecognised(string YtVideoFileWav) : IMessage;
+public sealed class LanguageRecognised : MessageBase<YtVideoFileWavId>
+{
+    public LanguageRecognised(YtVideoFileWavId entityId) : base(entityId)
+    {
+    }
+}

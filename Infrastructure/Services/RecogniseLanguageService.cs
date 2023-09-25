@@ -5,27 +5,28 @@ using Domain.Services;
 using Domain.UnitOfWork;
 using ExternalServices.Interfaces;
 using Hangfire;
-using Infrastructure.Services.Base;
 using ServiceBus.Producer.Messages;
 using ServiceBus.Producer.Publisher;
 
 namespace Infrastructure.Services;
 
 [DisableConcurrentExecution(timeoutInSeconds: 60)]
-public sealed class RecogniseLanguageService : MessagePublisherService<LanguageRecognised>, IRecogniseLanguageService
+public sealed class RecogniseLanguageService : IRecogniseLanguageService
 {
     private readonly IYtVideoFileWavRepository _videoFileWavRepository;
     private readonly ISpeechToTextService _speechToTextService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMessagePublisher _messagePublisher;
 
     public RecogniseLanguageService(IYtVideoFileWavRepository videoFileWavRepository,
         ISpeechToTextService speechToTextService,
         IUnitOfWork unitOfWork,
-        IMessagePublisher publisher) : base(publisher)
+        IMessagePublisher messagePublisher)
     {
         _videoFileWavRepository = videoFileWavRepository;
         _speechToTextService = speechToTextService;
         _unitOfWork = unitOfWork;
+        _messagePublisher = messagePublisher;
     }
 
     public async Task<IResult<bool>> Recognise(YtVideoFileWavId videoFileWavId, CancellationToken token)
@@ -39,8 +40,8 @@ public sealed class RecogniseLanguageService : MessagePublisherService<LanguageR
             return Result<bool>.Error(recogniseLanguageResult);
 
         ytVideoWav.SetLanguage(recogniseLanguageResult.Data);
-        
-        await Publish(new LanguageRecognised(ytVideoWav.Id));
+
+        await _messagePublisher.Send(new LanguageRecognised(ytVideoWav.Id));
         await _unitOfWork.SaveChangesAsync(token);
         return Result<bool>.Success(true);
     }

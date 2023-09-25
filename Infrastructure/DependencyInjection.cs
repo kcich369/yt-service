@@ -20,6 +20,10 @@ public static class DependencyInjection
         serviceCollection.AddSingleton<ITranscriptionHelper, TranscriptionHelper>();
         serviceCollection.AddSingleton<IYtVideoMapper, YtVideoMapper>();
         serviceCollection.AddSingleton<ITranscriptionHelper, TranscriptionHelper>();
+
+        serviceCollection.AddScoped<IRedisHelper, RedisHelper>();
+        serviceCollection.AddScoped<IRedisLockHelper, RedisLockHelper>();
+        serviceCollection.AddScoped<IMessageHelper, IMessageHelper>();
         serviceCollection.AddScoped<IAddChannelVideosService, AddChannelVideosService>();
         serviceCollection.AddScoped<IConvertVideoFileToWavService, ConvertVideoFileToWavService>();
         serviceCollection.AddScoped<ICreateYtChannelWithVideosService, CreateYtChannelService>();
@@ -27,8 +31,7 @@ public static class DependencyInjection
         serviceCollection.AddScoped<IRecogniseLanguageService, RecogniseLanguageService>();
         serviceCollection.AddScoped<ITranscribeWavFileService, TranscribeWavFileService>();
         serviceCollection.AddScoped<ITranscriptionDataService, TranscriptionDataService>();
-        
-        
+
 
         return serviceCollection;
     }

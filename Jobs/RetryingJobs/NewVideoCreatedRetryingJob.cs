@@ -2,7 +2,6 @@
 using Domain.Enumerations;
 using Domain.Enumerations.Base;
 using Hangfire;
-using Infrastructure.Services.Base;
 using Jobs.RetryingJobs.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
@@ -12,14 +11,16 @@ using ServiceBus.Producer.Publisher;
 namespace Jobs.RetryingJobs;
 
 [DisableConcurrentExecution(timeoutInSeconds: 60)]
-public sealed class NewVideoCreatedRetryingJob : MessagePublisherService<NewVideoCreated>, INewVideoCreatedRetryingJob
+public sealed class NewVideoCreatedRetryingJob : INewVideoCreatedRetryingJob
 {
     private readonly IAppDbContext _dbContext;
+    private readonly IMessagePublisher _messagePublisher;
 
     public NewVideoCreatedRetryingJob(IAppDbContext dbContext,
-        IMessagePublisher messagePublisher) : base(messagePublisher)
+        IMessagePublisher messagePublisher)
     {
         _dbContext = dbContext;
+        _messagePublisher = messagePublisher;
     }
 
     public async Task Execute()
@@ -29,6 +30,6 @@ public sealed class NewVideoCreatedRetryingJob : MessagePublisherService<NewVide
             .Where(x => x.Process && x.Files.Count() < filesCount)
             .Select(x => new NewVideoCreated(x.Id))
             .ToListAsync();
-        await Publish(videos);
+        await _messagePublisher.Send(videos);
     }
 }

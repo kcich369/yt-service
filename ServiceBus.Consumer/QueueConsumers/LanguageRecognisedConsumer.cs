@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Domain.EntityIds;
+using Domain.Helpers;
 using Domain.Services;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,11 +17,10 @@ public sealed class LanguageRecognisedConsumer : QueueConsumerBackgroundService
     {
     }
 
-    protected override async Task Execute(IServiceProvider serviceProvider, string message, CancellationToken token)
+    protected override async Task Execute(IMessageHelper messageHelper, string message, CancellationToken token)
     {
-        using var scope = serviceProvider.CreateScope();
         var languageRecognised = JsonSerializer.Deserialize<LanguageRecognised>(message);
         BackgroundJob.Enqueue<ITranscribeWavFileService>((service) =>
-            service.Transcribe(new YtVideoFileWavId(languageRecognised.YtVideoFileWav), token));
+            service.Transcribe(languageRecognised.Id, token));
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using Hangfire;
-using Infrastructure.Services.Base;
 using Jobs.RetryingJobs.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
@@ -10,23 +9,25 @@ using ServiceBus.Producer.Publisher;
 namespace Jobs.RetryingJobs;
 
 [DisableConcurrentExecution(timeoutInSeconds: 60)]
-internal sealed class ChannelCreatedRetryingJob : MessagePublisherService<ChannelCreated>, IChannelCreatedRetryingJob
+internal sealed class ChannelCreatedRetryingJob : IChannelCreatedRetryingJob
 {
     private readonly IAppDbContext _dbContext;
+    private readonly IMessagePublisher _messagePublisher;
 
     public ChannelCreatedRetryingJob(IAppDbContext dbContext,
-        IMessagePublisher publisher) : base(publisher)
+        IMessagePublisher messagePublisher)
     {
         _dbContext = dbContext;
+        _messagePublisher = messagePublisher;
     }
 
     public async Task Execute()
     {
         var channels = await _dbContext.Set<YtChannel>()
-            .Include(x=>x.Videos)
-            .Where(x=>!x.Videos.Any())
+            .Include(x => x.Videos)
+            .Where(x => !x.Videos.Any())
             .Select(x => new ChannelCreated(x.Id))
             .ToListAsync();
-        await Publish(channels);
+        await _messagePublisher.Send(channels);
     }
 }

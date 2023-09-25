@@ -11,6 +11,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
         <PackageReference Include="NAudio" Version="2.2.0" />
         <PackageReference Include="StackExchange.Redis" Version="2.6.122" />
+        <PackageReference Include="DistributedLock.Redis" Version="1.0.2" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,5 +27,7 @@
         <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
         <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
     </ItemGroup>
+
+
 
 </Project>
