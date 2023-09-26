@@ -31,7 +31,7 @@ builder.Services
     .RegisterServiceBusProducer(builder.Configuration.ReturnConfigInstance<AzureServiceBusConfiguration>())
     .RegisterApplication()
     .RegisterPersistence(builder.GetDatabaseConnectionString())
-    .RegisterInfrastructure()
+    .RegisterInfrastructure(builder.Configuration)
     .RegisterPresentation()
     .RegisterExternalServices()
     .RegisterJobs(builder.GetHangfireConnectionString(), jobConf)
