@@ -74,7 +74,8 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
         }
 
         await _messagePublisher.Send(ytVideo.Process
-            ? ytVideo.Files.Where(x => !existedQualities.Contains(x.Quality)).Select(x => new VideoDownloaded(x.Id))
+            ? ytVideo.Files.Where(x => !existedQualities.Contains(x.Quality))
+                .Select(x => new VideoDownloaded(x.Id, ytVideo.Id))
             : Enumerable.Empty<VideoDownloaded>());
 
         await _unitOfWork.SaveChangesAsync(token);

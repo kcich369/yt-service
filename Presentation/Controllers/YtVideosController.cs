@@ -1,4 +1,6 @@
-﻿using Application.YtVideo.Queries;
+﻿using System.Text.Json;
+using Application.YtVideo.Queries;
+using Domain.Dtos;
 using Domain.Dtos.YtVideo;
 using Domain.Entities;
 using Domain.EntityIds;
@@ -58,14 +60,9 @@ public sealed class YtVideosController : ApiController
     public async Task<IActionResult> ClosedCaptions(CancellationToken token)
     {
         // _logger.LogError("Error from yt videos controller");
-        // await _publisher.Send(new ChannelCreated("01HAZ7XM42NVSKR55G23N6SS84"));
-        return Ok("OK");
-    }
+        var message = new ChannelCreated(new YtChannelId("01HB0X4DRJJCRYYE8H9BD71EMW"));
+        await _publisher.Send(message);
 
-    private async Task Update()
-    {
-        var video2 = await _dbContext.Set<YtVideo>().FirstOrDefaultAsync(x => x.Id == "01HB0X4V3RH24EWY7X7HYY551G");
-        video2.SetProcess();
-        await _unitOfWork.SaveChangesAsync(new CancellationToken());
+        return Ok("OK!");
     }
 }

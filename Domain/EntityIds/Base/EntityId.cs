@@ -1,11 +1,9 @@
-﻿using Newtonsoft.Json;
-
-namespace Domain.EntityIds.Base;
+﻿namespace Domain.EntityIds.Base;
 
 public abstract record EntityId
 {
-    [JsonProperty]
-    public Ulid Value { get; protected set; }
+    [Newtonsoft.Json.JsonProperty, System.Text.Json.Serialization.JsonInclude]
+    public Ulid Value { get; private set; }
 
     protected EntityId()
     {

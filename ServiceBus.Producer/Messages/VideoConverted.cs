@@ -3,9 +3,9 @@ using Domain.Messages;
 
 namespace ServiceBus.Producer.Messages;
 
-public sealed class VideoConverted : MessageBase<YtVideoFileWavId>
+public sealed class VideoConverted : MessageBase<YtVideoFileWavId, YtVideoFileId>
 {
-    public VideoConverted(YtVideoFileWavId entityId) : base(entityId)
+    public VideoConverted(YtVideoFileWavId id, YtVideoFileId? previousId = null) : base(id, previousId)
     {
     }
 }

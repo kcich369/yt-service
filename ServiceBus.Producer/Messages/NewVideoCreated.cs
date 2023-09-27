@@ -3,9 +3,9 @@ using Domain.Messages;
 
 namespace ServiceBus.Producer.Messages;
 
-public sealed class NewVideoCreated : MessageBase<YtVideoId>
+public sealed class NewVideoCreated : MessageBase<YtVideoId, YtChannelId>
 {
-    public NewVideoCreated(YtVideoId entityId) : base(entityId)
+    public NewVideoCreated(YtVideoId id, YtChannelId? previousId = null) : base(id, previousId)
     {
     }
 }

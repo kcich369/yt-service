@@ -24,8 +24,8 @@ internal sealed class VideoConvertedRetryingJob : IVideoConvertedRetryingJob
     public async Task Execute()
     {
         var videos = await _dbContext.Set<YtVideoFileWav>()
-            .Where(x =>x.Process && x.Language == null)
-            .Select(x =>new VideoConverted(x.Id))
+            .Where(x => x.Process && x.Language == null)
+            .Select(x => new VideoConverted(x.Id, null))
             .ToListAsync();
 
         await _messagePublisher.Send(videos);

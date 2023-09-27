@@ -49,7 +49,7 @@ public sealed class TranscribeWavFileService : ITranscribeWavFileService
             .Create(ytVideoFileWav.PathData.MainPath)
             .SetFileName(transcriptionPathResult.Data));
         await _unitOfWork.SaveChangesAsync(token);
-        await _messagePublisher.Send(new VideoTranscribed(ytVideoFileWav.YtVideoTranscription.Id));
+        await _messagePublisher.Send(new VideoTranscribed(ytVideoFileWav.YtVideoTranscription.Id, ytVideoFileWav.Id));
 
         return transcriptionPathResult.IsError
             ? Result<bool>.Error(transcriptionPathResult)

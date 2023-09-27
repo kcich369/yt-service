@@ -15,7 +15,7 @@ public sealed class VideoTranscribedConsumer : QueueConsumerBackgroundService
     {
     }
 
-    protected override async Task Execute(IMessageHelper messageHelper, string message, CancellationToken token)
+    protected override async Task Execute(string message, CancellationToken token)
     {
         var videoTranscribed = JsonSerializer.Deserialize<VideoTranscribed>(message);
         BackgroundJob.Enqueue<ITranscriptionDataService>((service) =>

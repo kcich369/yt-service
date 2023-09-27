@@ -41,4 +41,12 @@ public sealed class RedisLockHelper : IRedisLockHelper
             throw new Exception("Redis lock exception");
         return await _redisHelper.Exist(key);
     }
+
+    public async Task<bool> Remove(string key)
+    {
+        await using var handle = await _lock.TryAcquireAsync();
+        if (handle == null)
+            throw new Exception("Redis lock exception");
+        return await _redisHelper.Remove(key);
+    }
 }

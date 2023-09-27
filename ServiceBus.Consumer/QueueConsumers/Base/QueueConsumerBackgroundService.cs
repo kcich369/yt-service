@@ -16,6 +16,7 @@ public abstract class QueueConsumerBackgroundService : BackgroundService
 {
     private readonly EventsNamesEnums _eventsNamesEnums;
     private IServiceProvider ServiceProvider { get; }
+    protected IMessageHelper MessageHelper;
 
     protected QueueConsumerBackgroundService(IServiceProvider serviceProvider,
         EventsNamesEnums eventsNamesEnums)
@@ -27,7 +28,7 @@ public abstract class QueueConsumerBackgroundService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var scope = ServiceProvider.CreateScope();
-        var messageHelper = scope.ServiceProvider.GetRequiredService<IMessageHelper>();
+        MessageHelper = scope.ServiceProvider.GetRequiredService<IMessageHelper>();
         var subscriptionClient = scope.ServiceProvider
             .GetRequiredService<AzureServiceBusConfiguration>()
             .CreateSubscriptionClient(_eventsNamesEnums);
@@ -35,11 +36,11 @@ public abstract class QueueConsumerBackgroundService : BackgroundService
         subscriptionClient.RegisterMessageHandler(
             async (msg, token) =>
             {
-                await Execute(messageHelper, Encoding.UTF8.GetString(msg.Body), token);
+                await Execute(Encoding.UTF8.GetString(msg.Body), token);
                 await subscriptionClient.CompleteAsync(msg.SystemProperties.LockToken);
             },
             new MessageHandlerOptions(args => Task.CompletedTask) { AutoComplete = false, MaxConcurrentCalls = 1 });
     }
 
-    protected abstract Task Execute(IMessageHelper messageHelper, string message, CancellationToken token);
+    protected abstract Task Execute(string message, CancellationToken token);
 }

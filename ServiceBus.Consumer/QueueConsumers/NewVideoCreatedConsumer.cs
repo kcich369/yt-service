@@ -17,10 +17,11 @@ public sealed class NewVideoCreatedConsumer : QueueConsumerBackgroundService
     {
     }
 
-    protected override async Task Execute(IMessageHelper messageHelper, string message, CancellationToken token)
+    protected override async Task Execute(string message, CancellationToken token)
     {
         var newVideoCreated = JsonSerializer.Deserialize<NewVideoCreated>(message);
-        if(await messageHelper.MessageIsProcessing(newVideoCreated))
+        await MessageHelper.PreviousProcessIsFinished(newVideoCreated);
+        if (await MessageHelper.Delivered(newVideoCreated))
             return;
         BackgroundJob.Enqueue<IDownloadYtVideoFilesService>(service =>
             service.Download(newVideoCreated.Id, token));

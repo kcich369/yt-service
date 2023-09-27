@@ -37,7 +37,6 @@ public sealed class CreateYtChannelService : ICreateYtChannelWithVideosService
         IYtService ytService,
         IDirectoryProvider directoryProvider,
         IUnitOfWork unitOfWork,
-        IMessageHelper messageHelper,
         IMessagePublisher messagePublisher,
         ILogger<CreateYtChannelService> logger)
     {
@@ -53,7 +52,6 @@ public sealed class CreateYtChannelService : ICreateYtChannelWithVideosService
     public async Task<IResult<YtChannelVideosDto>> Execute(string handleName, CancellationToken token)
     {
         var newChannelId = new YtChannelId();
-        var message = new ChannelCreated(newChannelId);
 
         var createChannelResult = await (await _ytService.GetChannel(handleName, true, token))
             .ReturnOut(out var channel)
@@ -61,13 +59,13 @@ public sealed class CreateYtChannelService : ICreateYtChannelWithVideosService
             .Next((r) => _ytChannelRepository.Add(YtChannel.Create(newChannelId, channel.Data.Name,
                 handleName, channel.Data.YtId, channel.Data.Url), token).TryCatch())
             .Next((res) => _unitOfWork.SaveChangesAsync(token).TryCatch());
-
         if (createChannelResult.IsError)
             return Result<YtChannelVideosDto>.Error(createChannelResult).LogErrorMessage(_logger);
 
         _directoryProvider.CreateIfNotExists(
             _pathProvider.GetRelativePath(_pathProvider.GetChannelPath(channel.Data.Name)));
-        await _messagePublisher.Send(message);
+        await _messagePublisher.Send(new ChannelCreated(newChannelId));
+       
         return Result<YtChannelVideosDto>.Success(new YtChannelVideosDto(newChannelId, channel.Data.Name,
             channel.Data.YtId, null));
     }

@@ -27,7 +27,7 @@ internal sealed class VideoTranscribedRetryingJob : IVideoTranscribedRetryingJob
             .Include(x => x.Description)
             .Include(x => x.Tag)
             .Where(x => x.Process && x.Description == null || x.Tag == null)
-            .Select(x => new VideoTranscribed(x.Id))
+            .Select(x => new VideoTranscribed(x.Id, null))
             .ToListAsync();
         await _messagePublisher.Send(transcribeVideos);
     }

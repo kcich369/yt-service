@@ -25,11 +25,11 @@ public static class DependencyInjection
         serviceCollection.AddSingleton<ITranscriptionHelper, TranscriptionHelper>();
         serviceCollection.AddSingleton<IYtVideoMapper, YtVideoMapper>();
         serviceCollection.AddSingleton<ITranscriptionHelper, TranscriptionHelper>();
+        serviceCollection.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(configuration.ReturnConfigInstance<RedisConfiguration>().ConnectionPort));
 
-        serviceCollection.AddScoped<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(configuration.ReturnConfigInstance<RedisConfiguration>().ConnectionPort));
         serviceCollection.AddScoped<IRedisHelper, RedisHelper>();
         serviceCollection.AddScoped<IRedisLockHelper, RedisLockHelper>();
-        serviceCollection.AddScoped<IMessageHelper, IMessageHelper>();
+        serviceCollection.AddScoped<IMessageHelper, MessageHelper>();
         serviceCollection.AddScoped<IAddChannelVideosService, AddChannelVideosService>();
         serviceCollection.AddScoped<IConvertVideoFileToWavService, ConvertVideoFileToWavService>();
         serviceCollection.AddScoped<ICreateYtChannelWithVideosService, CreateYtChannelService>();

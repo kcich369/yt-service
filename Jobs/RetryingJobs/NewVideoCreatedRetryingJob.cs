@@ -28,7 +28,7 @@ public sealed class NewVideoCreatedRetryingJob : INewVideoCreatedRetryingJob
         var filesCount = Enumeration.GetAll<VideoQualityEnum>().Count();
         var videos = await _dbContext.Set<YtVideo>()
             .Where(x => x.Process && x.Files.Count() < filesCount)
-            .Select(x => new NewVideoCreated(x.Id))
+            .Select(x => new NewVideoCreated(x.Id, null))
             .ToListAsync();
         await _messagePublisher.Send(videos);
     }

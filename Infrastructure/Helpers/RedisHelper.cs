@@ -23,6 +23,9 @@ public sealed class RedisHelper : IRedisHelper
         await _connectionMultiplexer.GetDatabase()
             .StringSetAsync(key, JsonSerializer.Serialize<T>(data), expiry);
 
-    public async Task<bool> Exist(string key) =>
-        await _connectionMultiplexer.GetDatabase().KeyExistsAsync(key);
+    public async Task<bool> Exist(string key)=>
+         await _connectionMultiplexer.GetDatabase().KeyExistsAsync(key);
+
+    public async Task<bool> Remove(string key)=>
+        await _connectionMultiplexer.GetDatabase().KeyDeleteAsync(key);
 }

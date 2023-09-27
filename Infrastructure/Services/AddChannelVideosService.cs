@@ -52,9 +52,9 @@ public sealed class AddChannelVideosService : IAddChannelVideosService
     {
         var ytChannel = await _ytChannelRepository.GetWithVideos(ytChannelId, _configuration.Amount, token);
         if (ytChannel is null)
-            return Result<bool>.Error(ErrorTypesEnums.NotFound,ErrorMessages.ChannelNotExists(ytChannelId))
+            return Result<bool>.Error(ErrorTypesEnums.NotFound, ErrorMessages.ChannelNotExists(ytChannelId))
                 .LogErrorMessage(_logger);
-               
+
         var allVideosResult = await _ytService.GetChannelVideos(ytChannel.Url, null, token);
         if (allVideosResult.IsError)
             return Result<bool>.Error(allVideosResult).LogErrorMessage(_logger);
@@ -67,7 +67,7 @@ public sealed class AddChannelVideosService : IAddChannelVideosService
 
         ytChannel.AddVideos(newVideos);
         await _unitOfWork.SaveChangesAsync(token);
-        await _messagePublisher.Send(newVideos.Where(x => x.Process).Select(x => new NewVideoCreated(x.Id)));
+        await _messagePublisher.Send(newVideos.Where(x => x.Process).Select(x => new NewVideoCreated(x.Id,ytChannel.Id)));
 
         return Result<bool>.Success(true);
     }
