@@ -26,7 +26,7 @@ internal sealed class LanguageRecognisedRetryingJob : ILanguageRecognisedRetryin
         var transcribeVideos = await _dbContext.Set<YtVideoFileWav>()
             .Include(x => x.YtVideoTranscription)
             .Where(x => x.Process && x.YtVideoTranscription == null)
-            .Select(x => new LanguageRecognised(x.Id))
+            .Select(x => new LanguageRecognised(x.Id,null))
             .ToListAsync();
 
         await _messagePublisher.Send(transcribeVideos);

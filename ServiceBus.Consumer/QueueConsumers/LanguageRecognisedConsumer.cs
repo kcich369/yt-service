@@ -17,9 +17,11 @@ public sealed class LanguageRecognisedConsumer : QueueConsumerBackgroundService
     {
     }
 
-    protected override async Task Execute(IMessageHelper messageHelper, string message, CancellationToken token)
+    protected override async Task Execute(string message, CancellationToken token)
     {
         var languageRecognised = JsonSerializer.Deserialize<LanguageRecognised>(message);
+        if ((await HandleMessage(languageRecognised)).Data)
+            return;
         BackgroundJob.Enqueue<ITranscribeWavFileService>((service) =>
             service.Transcribe(languageRecognised.Id, token));
     }

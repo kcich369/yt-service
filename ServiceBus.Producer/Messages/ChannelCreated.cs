@@ -3,9 +3,13 @@ using Domain.Messages;
 
 namespace ServiceBus.Producer.Messages;
 
-public sealed class ChannelCreated : MessageBase<YtChannelId>
+public sealed class ChannelCreated : MessageBase<YtChannelId, YtChannelId>
 {
-    public ChannelCreated(YtChannelId ytChannelId) : base(ytChannelId)
+    public ChannelCreated()
+    {
+    }
+
+    public ChannelCreated(YtChannelId id) : base(id)
     {
     }
 }

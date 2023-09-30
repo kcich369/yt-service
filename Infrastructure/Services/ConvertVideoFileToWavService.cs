@@ -52,7 +52,7 @@ public sealed class ConvertVideoFileToWavService : IConvertVideoFileToWavService
         ytVideoFile.AddWavFile(YtVideoFileWav.Create(ytVideoFile.PathData.MainPath)
             .SetFileName(ytVideoFile.PathData.FileName));
         await _unitOfWork.SaveChangesAsync(token);
-        await _messagePublisher.Send(new VideoConverted(ytVideoFile.WavFile.Id));
+        await _messagePublisher.Send(new VideoConverted(ytVideoFile.WavFile.Id, ytVideoFile.Id));
         return Result<bool>.Success(true);
     }
 }

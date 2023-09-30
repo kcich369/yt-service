@@ -41,7 +41,7 @@ public sealed class RecogniseLanguageService : IRecogniseLanguageService
 
         ytVideoWav.SetLanguage(recogniseLanguageResult.Data);
 
-        await _messagePublisher.Send(new LanguageRecognised(ytVideoWav.Id));
+        await _messagePublisher.Send(new LanguageRecognised(ytVideoWav.Id, ytVideoWav.Id));
         await _unitOfWork.SaveChangesAsync(token);
         return Result<bool>.Success(true);
     }

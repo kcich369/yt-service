@@ -12,7 +12,7 @@ using Persistence.Context;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230923112436_InitialDb")]
+    [Migration("20230929173519_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -117,7 +117,7 @@ namespace Persistence.Migrations
                     b.Property<bool>("Process")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("UpdatedBy")
@@ -231,7 +231,7 @@ namespace Persistence.Migrations
                     b.Property<int>("Retries")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("UpdatedBy")

@@ -2,12 +2,21 @@
 
 namespace Domain.Messages;
 
-public abstract class MessageBase<T> : IMessage where T : EntityId
+public abstract class MessageBase<TId, TPreviousId> : IMessage where TId : EntityId where TPreviousId : EntityId
 {
-    public T Id { get; private set; }
+    [Newtonsoft.Json.JsonProperty, System.Text.Json.Serialization.JsonInclude]
+    public TId Id { get; private set; }
 
-    protected MessageBase(T entityId)
+    [Newtonsoft.Json.JsonProperty, System.Text.Json.Serialization.JsonInclude]
+    public TPreviousId? PreviousId { get; private set; }
+
+    protected MessageBase()
     {
-        Id = entityId;
+    }
+
+    protected MessageBase(TId id, TPreviousId? previousId = null)
+    {
+        Id = id;
+        PreviousId = previousId;
     }
 }

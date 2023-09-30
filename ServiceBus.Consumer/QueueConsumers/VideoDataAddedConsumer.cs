@@ -17,8 +17,10 @@ public sealed class VideoDataAddedConsumer : QueueConsumerBackgroundService
     {
     }
 
-    protected override async Task Execute(IMessageHelper messageHelper, string message, CancellationToken token)
+    protected override async Task Execute(string message, CancellationToken token)
     {
-        var newVideoCreated = JsonSerializer.Deserialize<VideoDataAdded>(message);
+        var videoDataAdded = JsonSerializer.Deserialize<VideoDataAdded>(message);
+        if ((await HandleMessage(videoDataAdded)).Data)
+            return;
     }
 }

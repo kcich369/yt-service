@@ -1,23 +1,21 @@
 ﻿using Domain.Helpers;
-using Infrastructure.Factories;
 using Medallion.Threading.Redis;
+using StackExchange.Redis;
 
 namespace Infrastructure.Helpers;
 
 public sealed class RedisLockHelper : IRedisLockHelper
 {
-    private readonly IRedisFactory _redisFactory;
     private readonly IRedisHelper _redisHelper;
     private readonly RedisDistributedLock _lock;
     private const string RedisLock = nameof(RedisLock);
 
 
-    public RedisLockHelper(IRedisFactory redisFactory,
+    public RedisLockHelper(IConnectionMultiplexer connectionMultiplexer,
         IRedisHelper redisHelper)
     {
-        _redisFactory = redisFactory;
         _redisHelper = redisHelper;
-        _lock = new RedisDistributedLock(RedisLock, _redisFactory.GetDatabase());
+        _lock = new RedisDistributedLock(RedisLock, connectionMultiplexer.GetDatabase());
     }
 
     public async Task<T> GetData<T>(string key)
@@ -42,5 +40,13 @@ public sealed class RedisLockHelper : IRedisLockHelper
         if (handle == null)
             throw new Exception("Redis lock exception");
         return await _redisHelper.Exist(key);
+    }
+
+    public async Task<bool> Remove(string key)
+    {
+        await using var handle = await _lock.TryAcquireAsync();
+        if (handle == null)
+            throw new Exception("Redis lock exception");
+        return await _redisHelper.Remove(key);
     }
 }

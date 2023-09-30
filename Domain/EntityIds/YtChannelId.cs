@@ -4,7 +4,7 @@ namespace Domain.EntityIds;
 
 public record YtChannelId : EntityId
 {
-    public YtChannelId() : base()
+    public YtChannelId()
     {
     }
 

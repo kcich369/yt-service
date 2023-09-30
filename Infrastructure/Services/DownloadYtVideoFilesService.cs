@@ -48,10 +48,10 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
         if (ytVideo is null)
             return Result<bool>.Error(ErrorTypesEnums.BadRequest, $"Yt video with given id {ytVideoId} does not exist.")
                 .LogErrorMessage(_logger);
-        if (!ytVideo.Process)
-            return Result<bool>.Error(ErrorTypesEnums.BadRequest,
-                    $"Yt video with given id {ytVideoId} can not be processed.")
-                .LogErrorMessage(_logger);
+        // if (!ytVideo.Process)
+        //     return Result<bool>.Error(ErrorTypesEnums.BadRequest,
+        //             $"Yt video with given id {ytVideoId} can not be processed.")
+        //         .LogErrorMessage(_logger);
 
         var existedQualities = ytVideo.Files.Select(x => x.Quality).ToList();
         var mainPath = $@"{_filesDataConfiguration.Path}\{ytVideo.Channel.Name}\{ytVideo.YtId}";
@@ -74,7 +74,8 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
         }
 
         await _messagePublisher.Send(ytVideo.Process
-            ? ytVideo.Files.Where(x => !existedQualities.Contains(x.Quality)).Select(x => new VideoDownloaded(x.Id))
+            ? ytVideo.Files.Where(x => !existedQualities.Contains(x.Quality))
+                .Select(x => new VideoDownloaded(x.Id, ytVideo.Id))
             : Enumerable.Empty<VideoDownloaded>());
 
         await _unitOfWork.SaveChangesAsync(token);

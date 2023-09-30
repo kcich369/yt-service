@@ -3,9 +3,9 @@ using Domain.Messages;
 
 namespace ServiceBus.Producer.Messages;
 
-public sealed class LanguageRecognised : MessageBase<YtVideoFileWavId>
+public sealed class LanguageRecognised : MessageBase<YtVideoFileWavId, YtVideoFileWavId>
 {
-    public LanguageRecognised(YtVideoFileWavId entityId) : base(entityId)
+    public LanguageRecognised(YtVideoFileWavId id, YtVideoFileWavId? previousId = null) : base(id, previousId)
     {
     }
 }

@@ -17,9 +17,11 @@ public sealed class VideoConvertedConsumer : QueueConsumerBackgroundService
     {
     }
 
-    protected override async Task Execute(IMessageHelper messageHelper, string message, CancellationToken token)
+    protected override async Task Execute(string message, CancellationToken token)
     {
         var newVideoCreated = JsonSerializer.Deserialize<VideoConverted>(message);
+        if ((await HandleMessage(newVideoCreated)).Data)
+            return;
         BackgroundJob.Enqueue<IRecogniseLanguageService>((service) => service
             .Recognise(newVideoCreated.Id, token));
     }

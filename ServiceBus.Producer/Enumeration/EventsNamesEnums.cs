@@ -1,6 +1,4 @@
-﻿using ServiceBus.Producer.Messages;
-
-namespace ServiceBus.Producer.Enumeration;
+﻿namespace ServiceBus.Producer.Enumeration;
 
 public class EventsNamesEnums : Domain.Enumerations.Base.Enumeration
 {
