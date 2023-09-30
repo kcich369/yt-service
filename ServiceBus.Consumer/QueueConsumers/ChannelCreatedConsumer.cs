@@ -20,7 +20,7 @@ public sealed class ChannelCreatedConsumer : QueueConsumerBackgroundService
     protected override async Task Execute(string message, CancellationToken token)
     {
         var channelCreated = JsonSerializer.Deserialize<ChannelCreated>(message);
-        if(await MessageHelper.Delivered(channelCreated))
+        if ((await HandleMessage(channelCreated)).Data)
             return;
         BackgroundJob.Enqueue<IAddChannelVideosService>((service) => service
             .ApplyNewVideos(channelCreated.Id, token));

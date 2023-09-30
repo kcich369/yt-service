@@ -38,14 +38,14 @@ public sealed class YtVideosController : ApiController
     }
 
     [HttpPost("search")]
-    [SwaggerOperation(Summary = "Result of searching yt videos names", Description = "Search yt video by name")]
+    [SwaggerOperation(Summary = "Data of searching yt videos names", Description = "Search yt video by name")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetWithVideoNames(SearchVideosDto searchVideosDto, CancellationToken token) => Ok(
         await Mediator.Send(new SearchVideosByQueryQuery(searchVideosDto), token));
 
     [HttpGet("id")]
-    [SwaggerOperation(Summary = "Result of searching yt videos names",
+    [SwaggerOperation(Summary = "Data of searching yt videos names",
         Description = "Search yt video names by given value")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -53,16 +53,20 @@ public sealed class YtVideosController : ApiController
         Ok(await Mediator.Send(new GetVideosByIdQuery(new YtVideoId(id)), token));
 
     [HttpPost]
-    [SwaggerOperation(Summary = "Result of searching yt videos names",
+    [SwaggerOperation(Summary = "Data of searching yt videos names",
         Description = "Search yt video names by given value")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ClosedCaptions(CancellationToken token)
     {
         // _logger.LogError("Error from yt videos controller");
-        var message = new ChannelCreated(new YtChannelId("01HB0X4DRJJCRYYE8H9BD71EMW"));
+        var message = new ChannelCreated(new YtChannelId("01HBH0EAFX616XN8G2AQWBZHA8"));
+        // var message = new NewVideoCreated(new YtVideoId("01HBH0GR0X79X0J1HMGMGAQKX8"),new YtChannelId("01HBH0EAFX616XN8G2AQWBZHA8"));
+
         await _publisher.Send(message);
 
+        // var channel = await _dbContext.Set<YtChannel>().FirstOrDefaultAsync(x => x.Id == new YtChannelId("01HB0X4DRJJCRYYE8H9BD71EMW"));
+        // var channel = await _dbContext.Set<YtChannel>().FirstOrDefaultAsync();
         return Ok("OK!");
     }
 }

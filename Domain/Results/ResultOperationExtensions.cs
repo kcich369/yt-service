@@ -2,7 +2,7 @@
 
 namespace Domain.Results;
 
-public static class ResultExtensions
+public static class ResultOperationExtensions
 {
     public static async Task<IResult<T>> TryCatch<T>(this Task<IResult<T>> task)
     {

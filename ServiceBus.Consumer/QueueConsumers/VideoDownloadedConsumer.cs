@@ -20,8 +20,7 @@ public sealed class VideoDownloadedConsumer : QueueConsumerBackgroundService
     protected override async Task Execute(string message, CancellationToken token)
     {
         var videoDownloaded = JsonSerializer.Deserialize<VideoDownloaded>(message);
-        await MessageHelper.PreviousProcessIsFinished(videoDownloaded);
-        if (await MessageHelper.Delivered(videoDownloaded))
+        if ((await HandleMessage(videoDownloaded)).Data)
             return;
         BackgroundJob.Enqueue<IConvertVideoFileToWavService>((service) =>
             service.Convert(videoDownloaded.Id, token));

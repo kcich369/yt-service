@@ -2,5 +2,6 @@
 
 public interface IDirectoryProvider
 {
-    void CreateIfNotExists(string path);
+    void CreateDirectoryIfNotExists(string path);
+    bool FileExists(string path);
 }

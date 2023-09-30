@@ -16,5 +16,5 @@ public abstract record EntityId
     }
 
     public static implicit operator string(EntityId id )=> id.ToString();
-    public override string ToString() => Value.ToString();
+    public override string ToString() => Value.ToString() ?? string.Empty;
 }

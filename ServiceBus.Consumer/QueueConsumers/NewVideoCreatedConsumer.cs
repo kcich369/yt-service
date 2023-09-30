@@ -1,9 +1,11 @@
 ﻿using System.Text.Json;
 using Domain.EntityIds;
 using Domain.Helpers;
+using Domain.Results;
 using Domain.Services;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ServiceBus.Consumer.QueueConsumers.Base;
 using ServiceBus.Producer.Enumeration;
 using ServiceBus.Producer.Messages;
@@ -20,8 +22,7 @@ public sealed class NewVideoCreatedConsumer : QueueConsumerBackgroundService
     protected override async Task Execute(string message, CancellationToken token)
     {
         var newVideoCreated = JsonSerializer.Deserialize<NewVideoCreated>(message);
-        await MessageHelper.PreviousProcessIsFinished(newVideoCreated);
-        if (await MessageHelper.Delivered(newVideoCreated))
+        if ((await HandleMessage(newVideoCreated)).Data)
             return;
         BackgroundJob.Enqueue<IDownloadYtVideoFilesService>(service =>
             service.Download(newVideoCreated.Id, token));

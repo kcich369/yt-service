@@ -38,7 +38,7 @@ public class Result<T> : Result, IResult<T>
     public static Result<T> Error(IResult errorResult)
     {
         if (!errorResult.IsError)
-            throw new ArgumentException("Result is not error");
+            throw new ArgumentException("Data is not error");
         return new Result<T>(errorResult.ErrorType, errorResult.ErrorMessage);
     }
 

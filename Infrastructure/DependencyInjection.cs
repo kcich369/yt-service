@@ -25,7 +25,8 @@ public static class DependencyInjection
         serviceCollection.AddSingleton<ITranscriptionHelper, TranscriptionHelper>();
         serviceCollection.AddSingleton<IYtVideoMapper, YtVideoMapper>();
         serviceCollection.AddSingleton<ITranscriptionHelper, TranscriptionHelper>();
-        serviceCollection.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(configuration.ReturnConfigInstance<RedisConfiguration>().ConnectionPort));
+        serviceCollection.AddSingleton<IConnectionMultiplexer>(_ =>
+            ConnectionMultiplexer.Connect(configuration.ReturnConfigInstance<RedisConfiguration>().ConnectionPort));
 
         serviceCollection.AddScoped<IRedisHelper, RedisHelper>();
         serviceCollection.AddScoped<IRedisLockHelper, RedisLockHelper>();
@@ -37,7 +38,7 @@ public static class DependencyInjection
         serviceCollection.AddScoped<IRecogniseLanguageService, RecogniseLanguageService>();
         serviceCollection.AddScoped<ITranscribeWavFileService, TranscribeWavFileService>();
         serviceCollection.AddScoped<ITranscriptionDataService, TranscriptionDataService>();
-
+        serviceCollection.AddScoped<ICacheKeysProvider, CacheKeysProvider>();
 
         return serviceCollection;
     }

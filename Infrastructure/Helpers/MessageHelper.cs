@@ -38,10 +38,12 @@ public sealed class MessageHelper : IMessageHelper
         return true;
     }
 
-    public async Task<bool> PreviousProcessIsFinished<TId, TPreviousId>(MessageBase<TId, TPreviousId> message)
+    public async Task<bool> PreviousOperationIsFinished<TId, TPreviousId>(MessageBase<TId, TPreviousId> message)
         where TId : EntityId where TPreviousId : EntityId
     {
         var key = _cacheKeysProvider.GetPreviousMessageKey(message);
+        if (string.IsNullOrEmpty(key))
+            return false;
         if (await _redisLockHelper.Exist(key))
             return await _redisLockHelper.Remove(key);
         _logger.LogError("Can not clear previous lock because given key: {Key} does not exist", key);

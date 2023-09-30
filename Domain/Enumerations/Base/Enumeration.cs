@@ -18,10 +18,10 @@ public class Enumeration : IComparable
             .Select(f => f.GetValue(null))
             .Cast<T>();
 
-    public static T GetByName<T>(string name) where T : Enumeration =>
+    public static T? GetByName<T>(string name) where T : Enumeration =>
         GetAll<T>().FirstOrDefault(x => x.Name == name);
 
-    public static T GetById<T>(int id) where T : Enumeration =>
+    public static T? GetById<T>(int id) where T : Enumeration =>
         GetAll<T>().FirstOrDefault(x => x.Id == id);
 
 
