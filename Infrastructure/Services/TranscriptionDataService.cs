@@ -7,12 +7,12 @@ using Domain.Services;
 using Domain.UnitOfWork;
 using ExternalServices.Interfaces;
 using Hangfire;
+using Infrastructure.Helpers.Interfaces;
 using ServiceBus.Producer.Messages;
 using ServiceBus.Producer.Publisher;
 
 namespace Infrastructure.Services;
 
-[DisableConcurrentExecution(timeoutInSeconds: 60)]
 public class TranscriptionDataService : ITranscriptionDataService
 {
     private readonly IYtVideoTranscriptionRepository _transcriptionRepository;
@@ -31,6 +31,7 @@ public class TranscriptionDataService : ITranscriptionDataService
         _unitOfWork = unitOfWork;
     }
 
+    [DisableConcurrentExecution(timeoutInSeconds: 60)]
     public async Task<IResult<bool>> Create(YtVideoTranscriptionId ytVideoTranscriptionId, CancellationToken token)
     {
         var transcription = await _transcriptionRepository.GetToVideoDescription(ytVideoTranscriptionId, token);

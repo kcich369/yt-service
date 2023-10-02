@@ -33,7 +33,7 @@ public abstract class QueueConsumerBackgroundService : BackgroundService
     {
         using var scope = _serviceProvider.CreateScope();
         var subscriptionClient = scope.ServiceProvider
-            .GetRequiredService<AzureServiceBusConfiguration>()
+            .GetRequiredService<AzureServiceConfiguration>()
             .CreateSubscriptionClient(_eventsNamesEnums);
         GetRequiredServices();
         subscriptionClient.RegisterMessageHandler(

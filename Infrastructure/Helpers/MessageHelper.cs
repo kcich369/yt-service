@@ -3,6 +3,7 @@ using Domain.EntityIds.Base;
 using Domain.Helpers;
 using Domain.Messages;
 using Domain.Providers;
+using Infrastructure.Helpers.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Helpers;

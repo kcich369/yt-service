@@ -4,6 +4,7 @@ using Domain.Providers;
 using Domain.Services;
 using Infrastructure.Extensions;
 using Infrastructure.Helpers;
+using Infrastructure.Helpers.Interfaces;
 using Infrastructure.Mappers;
 using Infrastructure.Providers;
 using Infrastructure.Services;
@@ -22,9 +23,9 @@ public static class DependencyInjection
         serviceCollection.AddSingleton<IPathProvider, PathProvider>();
         serviceCollection.AddSingleton<IDirectoryProvider, DirectoryProvider>();
         serviceCollection.AddSingleton<IConvertFileToWavHelper, ConvertFileToWavHelper>();
-        serviceCollection.AddSingleton<ITranscriptionHelper, TranscriptionHelper>();
+        serviceCollection.AddSingleton<ITranscriptionHelper, TxtFileHelper>();
         serviceCollection.AddSingleton<IYtVideoMapper, YtVideoMapper>();
-        serviceCollection.AddSingleton<ITranscriptionHelper, TranscriptionHelper>();
+        serviceCollection.AddSingleton<ITranscriptionHelper, TxtFileHelper>();
         serviceCollection.AddSingleton<IConnectionMultiplexer>(_ =>
             ConnectionMultiplexer.Connect(configuration.ReturnConfigInstance<RedisConfiguration>().ConnectionPort));
 

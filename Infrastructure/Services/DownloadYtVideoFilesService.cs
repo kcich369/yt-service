@@ -17,7 +17,6 @@ using ServiceBus.Producer.Publisher;
 
 namespace Infrastructure.Services;
 
-[DisableConcurrentExecution(timeoutInSeconds: 60)]
 public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
 {
     private readonly IYtVideoRepository _ytVideoRepository;
@@ -42,6 +41,7 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
         _messagePublisher = messagePublisher;
     }
 
+    [DisableConcurrentExecution(timeoutInSeconds: 60)]
     public async Task<Result<bool>> Download(YtVideoId ytVideoId, CancellationToken token)
     {
         var ytVideo = await _ytVideoRepository.GetForDownloading(ytVideoId, token);
@@ -74,7 +74,7 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
         }
 
         await _messagePublisher.Send(ytVideo.Process
-            ? ytVideo.Files.Where(x => !existedQualities.Contains(x.Quality))
+            ? ytVideo.Files.Where(x => !existedQualities.Contains(x.Quality) && x.Quality == VideoQualityEnum.High.Name)
                 .Select(x => new VideoDownloaded(x.Id, ytVideo.Id))
             : Enumerable.Empty<VideoDownloaded>());
 

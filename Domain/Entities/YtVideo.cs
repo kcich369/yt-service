@@ -12,7 +12,7 @@ public sealed class YtVideo : Entity<YtVideoId>, ICreated, IUpdated
     public DateTimeOffset CreatedAt { get; private set; }
     public UserId CreatedById { get; private set; }
     public string CreatedBy { get; private set; }
-    public DateTimeOffset UpdatedAt { get; private set; }
+    public DateTimeOffset? UpdatedAt { get; private set; }
     public UserId UpdatedById { get; private set; }
     public string UpdatedBy { get; private set; }
     public TimeSpan? Duration { get; private set; }

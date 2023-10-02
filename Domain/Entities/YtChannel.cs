@@ -14,7 +14,7 @@ public sealed class YtChannel : Entity<YtChannelId>, ICreated, IUpdated
     public UserId CreatedById { get; private set; }
     public string CreatedBy { get; private set; }
 
-    public DateTimeOffset UpdatedAt { get; }
+    public DateTimeOffset? UpdatedAt { get; }
     public UserId UpdatedById { get; }
     public string UpdatedBy { get; }
 

@@ -28,7 +28,7 @@ var jobConf = builder.Configuration.ReturnConfigInstance<JobsConfiguration>();
 
 builder.Services
     .RegisterAllConfigurations(builder.Configuration)
-    .RegisterServiceBusProducer(builder.Configuration.ReturnConfigInstance<AzureServiceBusConfiguration>())
+    .RegisterServiceBusProducer(builder.Configuration.ReturnConfigInstance<AzureServiceConfiguration>())
     .RegisterApplication()
     .RegisterPersistence(builder.GetDatabaseConnectionString())
     .RegisterInfrastructure(builder.Configuration)

@@ -4,7 +4,8 @@ using Domain.Results;
 
 namespace ExternalServices.Interfaces;
 
-public interface IChatGptService
+public interface ILanguageRecognitionService
 {
-    Task<IResult<string>> Ask(string message, CancellationToken token);
+    Task<IResult<string>> FromWavFile(string path, CancellationToken token);
+
 }

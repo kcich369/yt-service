@@ -1,10 +1,16 @@
-﻿using Domain.Configurations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Domain.Configurations;
 using Domain.EntityIds;
 using Domain.Enumerations;
 using Domain.Providers;
 using Domain.Results;
 using ExternalServices.Dto;
 using ExternalServices.Factories;
+using ExternalServices.Factories.Interfaces;
 using ExternalServices.Interfaces;
 using ExternalServices.Mappers;
 using YoutubeReExplode.Videos.Streams;
@@ -35,24 +41,29 @@ internal sealed class YtService : IYtService
     public async Task<IResult<YtChannelData>> GetChannel(string ytChannelName, bool getByHandleName,
         CancellationToken token)
     {
-        try
-        {
-            var channel = getByHandleName
-                ? await _ytClientFactory.GetYtClient().Channels
-                    .GetByHandleAsync($"{_ytServiceConfiguration.YtUrl}{ytChannelName}", token)
-                : await _ytClientFactory.GetYtClient().Channels
-                    .GetByUserAsync(
-                        $"{_ytServiceConfiguration.YtUrl}{_ytServiceConfiguration.YtUrlUser}{ytChannelName}", token);
-            return Result<YtChannelData>.Success(new YtChannelData(channel.Title, channel.Id, channel.Url));
-        }
-        catch (Exception e)
-        {
-            return e.Message.Contains("404 (Not Found)")
-                ? Result<YtChannelData>.Error(ErrorTypesEnums.NotFound,
-                    $"Channel with given name: {ytChannelName} does not exist.")
-                : Result<YtChannelData>.Error(ErrorTypesEnums.Exception, e.Message);
-        }
+        var channelDataResult = await GetChannelData(ytChannelName, getByHandleName, token).TryCatch();
+        return channelDataResult.IsError
+            ? ErrorResult(ytChannelName, channelDataResult)
+            : Result<YtChannelData>.Success(channelDataResult.Data);
     }
+
+    private async Task<YtChannelData> GetChannelData(string ytChannelName, bool getByHandleName,
+        CancellationToken token)
+    {
+        var channel = getByHandleName
+            ? await _ytClientFactory.GetYtClient().Channels
+                .GetByHandleAsync($"{_ytServiceConfiguration.YtUrl}{ytChannelName}", token)
+            : await _ytClientFactory.GetYtClient().Channels
+                .GetByUserAsync(
+                    $"{_ytServiceConfiguration.YtUrl}{_ytServiceConfiguration.YtUrlUser}{ytChannelName}", token);
+        return new YtChannelData(channel.Title, channel.Id, channel.Url);
+    }
+
+    private IResult<YtChannelData> ErrorResult(string ytChannelName, IResult channelDataResult) =>
+        channelDataResult.ErrorMessage.Contains("404 (Not Found)")
+            ? Result<YtChannelData>.Error(ErrorTypesEnums.NotFound,
+                $"Channel with given name: {ytChannelName} does not exist.")
+            : Result<YtChannelData>.Error(channelDataResult);
 
     public async Task<IResult<IList<YtVideoData>>> GetChannelVideos(string ytChannelUrl, int? amount,
         CancellationToken token) => Result<IList<YtVideoData>>.Success(
@@ -85,27 +96,29 @@ internal sealed class YtService : IYtService
         throw new NotImplementedException();
     }
 
-    public async Task<Result<YtVideoFileInfo>> DownloadYtVideoFile(VideoData videData, CancellationToken token)
+    public async Task<Result<YtVideoFileInfo>> DownloadYtVideoFile(VideoData videoData, CancellationToken token)
     {
-        try
-        {
-            var streamInfo = SelectAudioOnlyStream(await _ytClientFactory.GetYtClient().Videos.Streams
-                .GetManifestAsync(videData.Url, token), videData.Quality);
-            _directoryProvider.CreateDirectoryIfNotExists(_pathProvider.GetRelativePath(videData.MainPath));
-            var fileName = $"{videData.YtId}_{videData.Quality}";
-            if (!_directoryProvider.FileExists(_pathProvider.GetRelativePath(_pathProvider.GetVideoFilePath(
-                    videData.MainPath, fileName, streamInfo.Container.ToString()))))
-                await _ytClientFactory.GetYtClient().Videos.Streams.DownloadAsync(streamInfo,
-                    _pathProvider.GetRelativePath(_pathProvider.GetVideoFilePath(videData.MainPath,
-                        fileName, streamInfo.Container.ToString())), null, token);
+        var downloadingResult = await Download(videoData, token).TryCatch();
+        return downloadingResult.IsError
+            ? Result<YtVideoFileInfo>.Error(downloadingResult)
+            : Result<YtVideoFileInfo>.Success(downloadingResult.Data);
+    }
 
-            return Result<YtVideoFileInfo>.Success(new YtVideoFileInfo(fileName, streamInfo.Container.ToString(),
-                streamInfo.Size.Bytes));
-        }
-        catch (Exception e)
-        {
-            return Result<YtVideoFileInfo>.Error(ErrorTypesEnums.Exception, e.Message);
-        }
+    private async Task<YtVideoFileInfo> Download(VideoData videoData, CancellationToken token)
+    {
+        var streamInfo = SelectAudioOnlyStream(await _ytClientFactory.GetYtClient().Videos.Streams
+            .GetManifestAsync(videoData.Url, token), videoData.Quality);
+        _directoryProvider.CreateDirectoryIfNotExists(_pathProvider.GetRelativePath(videoData.MainPath));
+        var fileName = $"{videoData.YtId}_{videoData.Quality}";
+
+        if (!_directoryProvider.FileExists(_pathProvider.GetRelativePath(_pathProvider.GetVideoFilePath(
+                videoData.MainPath, fileName, streamInfo.Container.ToString()))))
+            await _ytClientFactory.GetYtClient().Videos.Streams.DownloadAsync(
+                streamInfo, _pathProvider.GetRelativePath(
+                    _pathProvider.GetVideoFilePath(videoData.MainPath, fileName, streamInfo.Container.ToString())),
+                null, token);
+
+        return new YtVideoFileInfo(fileName, streamInfo.Container.ToString(), streamInfo.Size.Bytes);
     }
 
     private static IStreamInfo SelectAudioOnlyStream(StreamManifest streamManifests, string quality)
@@ -115,7 +128,7 @@ internal sealed class YtService : IYtService
         if (quality == VideoQualityEnum.High.Name)
             streamInfo = streams.GetWithHighestBitrate();
         if (quality == VideoQualityEnum.Low.Name)
-            streamInfo = streams.ElementAt(streams.Count - 2);
+            streamInfo = streams.FirstOrDefault(x => x.Container.ToString() == "mp3");
         return streamInfo ??= streams.Last();
     }
 }
