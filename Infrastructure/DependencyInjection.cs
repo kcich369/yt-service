@@ -21,16 +21,15 @@ public static class DependencyInjection
     {
         serviceCollection.AddSingleton<IDateProvider, DateProvider>();
         serviceCollection.AddSingleton<IPathProvider, PathProvider>();
-        serviceCollection.AddSingleton<IDirectoryProvider, DirectoryProvider>();
-        serviceCollection.AddSingleton<IConvertFileToWavHelper, ConvertFileToWavHelper>();
-        serviceCollection.AddSingleton<ITranscriptionHelper, TxtFileHelper>();
+        serviceCollection.AddSingleton<ITxtFileHelper, TxtFileHelper>();
         serviceCollection.AddSingleton<IYtVideoMapper, YtVideoMapper>();
-        serviceCollection.AddSingleton<ITranscriptionHelper, TxtFileHelper>();
         serviceCollection.AddSingleton<IConnectionMultiplexer>(_ =>
             ConnectionMultiplexer.Connect(configuration.ReturnConfigInstance<RedisConfiguration>().ConnectionPort));
 
         serviceCollection.AddScoped<IRedisHelper, RedisHelper>();
         serviceCollection.AddScoped<IRedisLockHelper, RedisLockHelper>();
+        serviceCollection.AddScoped<IDirectoryProvider, DirectoryProvider>();
+        serviceCollection.AddScoped<IConvertFileToWavHelper, ConvertFileToWavHelper>();
         serviceCollection.AddScoped<IMessageHelper, MessageHelper>();
         serviceCollection.AddScoped<IAddChannelVideosService, AddChannelVideosService>();
         serviceCollection.AddScoped<IConvertVideoFileToWavService, ConvertVideoFileToWavService>();

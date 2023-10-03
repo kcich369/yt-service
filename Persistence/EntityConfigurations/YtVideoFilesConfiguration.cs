@@ -17,6 +17,7 @@ public class YtVideoFilesConfiguration : EntityConfiguration<YtVideoFile, YtVide
     protected override void ConfigureEntity(EntityTypeBuilder<YtVideoFile> builder)
     {
         builder.OwnsOne(x => x.PathData, ow => ow.ConfigurePathData());
+        builder.OwnsOne(x => x.Quality, ow => ow.ConfigureQuality());
 
         builder.HasOne(x => x.Video)
             .WithMany(y => y.Files)

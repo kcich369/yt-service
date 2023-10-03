@@ -1,4 +1,6 @@
 ﻿using Domain.EntityIds;
+using Domain.Enumerations;
+using Domain.Enumerations.Base;
 using Domain.Repositories;
 using Domain.Results;
 using Domain.Services;
@@ -43,7 +45,11 @@ public sealed class RecogniseLanguageService : IRecogniseLanguageService
             await _languageRecognitionService.FromWavFile(ytVideoWav.PathData.FullValue, token);
         if (recogniseLanguageResult.IsError)
             return Result<bool>.Error(recogniseLanguageResult).LogErrorMessage(_logger);
-        ytVideoWav.SetLanguage(recogniseLanguageResult.Data);
+        var language = Enumeration.GetAll<SupportedLanguagesEnum>()
+            .FirstOrDefault(x => x.CultureValue == recogniseLanguageResult.Data);
+        if(language is null)
+            return Result<bool>.Error(ErrorTypesEnums.Validation, "Language is not supported").LogErrorMessage(_logger);
+        ytVideoWav.SetLanguage(language);
         await _messagePublisher.Send(new LanguageRecognised(ytVideoWav.Id, ytVideoWav.Id));
         await _unitOfWork.SaveChangesAsync(token);
         return Result<bool>.Success(true);

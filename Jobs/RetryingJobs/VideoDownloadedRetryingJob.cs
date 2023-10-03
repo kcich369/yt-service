@@ -26,7 +26,7 @@ internal sealed class VideoDownloadedRetryingJob : IVideoDownloadedRetryingJob
     {
         var convertVideos = await _dbContext.Set<YtVideoFile>()
             .Include(x => x.Video)
-            .Where(x => x.Process && x.Quality == VideoQualityEnum.High.Name)
+            .Where(x => x.Process && x.Quality == VideoQualityEnum.High)
             .Select(x => new VideoDownloaded(x.Id, null))
             .ToListAsync();
         await _messagePublisher.Send(convertVideos);

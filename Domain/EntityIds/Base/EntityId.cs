@@ -15,6 +15,6 @@ public abstract record EntityId
         Value = Ulid.Parse(ulid);
     }
 
-    public static implicit operator string(EntityId id )=> id.ToString();
+    public static implicit operator string(EntityId id) => id.ToString();
     public override string ToString() => Value.ToString() ?? string.Empty;
 }

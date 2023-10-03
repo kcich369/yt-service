@@ -13,6 +13,7 @@ public static class DependencyInjection
     {
         serviceCollection.AddScoped<IYtClientFactory, YtClientFactory>();
         serviceCollection.AddScoped<IYtClientFactory, YtClientFactory>();
+        serviceCollection.AddScoped<IChatGptFactory, ChatGptFactory>();
         serviceCollection.AddScoped<ISpeechConfigFactory, SpeechConfigFactory>();
         
         serviceCollection.AddScoped<IYtVideoDataMapper, YtVideoDataMapper>();

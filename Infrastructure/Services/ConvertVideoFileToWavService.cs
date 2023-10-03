@@ -44,7 +44,7 @@ public sealed class ConvertVideoFileToWavService : IConvertVideoFileToWavService
         var ytVideoFile = await _ytVideoFileRepository.GetById(ytVideoFileId, token);
         if (ytVideoFile == null)
             return Result<bool>.Success(true);
-        if (ytVideoFile.Quality != VideoQualityEnum.High.Name)
+        if (ytVideoFile.Quality != VideoQualityEnum.High)
             return Result<bool>.Error(ErrorTypesEnums.Validation,
                 $"Given yt video file with id {ytVideoFileId} contains improper quality value.");
 

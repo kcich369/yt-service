@@ -4,12 +4,9 @@ using Domain.EntityIds;
 
 namespace Domain.Entities;
 
-public sealed class YtVideoTag : Entity<YtVideoTagId>, ICreated
+public sealed class YtVideoTag : Entity<YtVideoTagId>, ICreationInfo
 {
     public string Tags { get; private set; }
-    public DateTimeOffset CreatedAt { get; private set; }
-    public UserId CreatedById { get; private set; }
-    public string CreatedBy { get; private set; }
     public bool Process { get; private set; }
 
     //relations
@@ -29,13 +26,6 @@ public sealed class YtVideoTag : Entity<YtVideoTagId>, ICreated
     }
 
     public static YtVideoTag Create(string tags) => new(tags);
-
-    public void SetCreationData(DateTimeOffset createdAt, UserId createdById, string createdBy)
-    {
-        CreatedAt = createdAt;
-        CreatedById = createdById;
-        CreatedBy = createdBy;
-    }
 
     public YtVideoTag AppendDescription(string tags)
     {

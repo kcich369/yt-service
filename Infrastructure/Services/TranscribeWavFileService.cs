@@ -50,7 +50,7 @@ public sealed class TranscribeWavFileService : ITranscribeWavFileService
                 .LogErrorMessage(_logger);
 
         var transcriptionPathResult =
-            await TranscriptionPathResult(new PathDataDto(ytVideoFileWav.PathData), ytVideoFileWav.Language, token);
+            await TranscriptionPathResult(new PathDataDto(ytVideoFileWav.PathData), ytVideoFileWav.Language.CultureValue, token);
         if (transcriptionPathResult.IsError)
             return Result<bool>.Error(transcriptionPathResult).LogErrorMessage(_logger);
 
