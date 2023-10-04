@@ -5,5 +5,5 @@ namespace Domain.Services;
 
 public interface IAddChannelVideosService
 {
-    Task<Result<bool>> ApplyNewVideos(YtChannelId ytChannelId, CancellationToken token);
+    Task<IResult<bool>> ApplyNewVideos(YtChannelId ytChannelId, CancellationToken token);
 }

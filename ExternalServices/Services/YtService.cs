@@ -96,7 +96,7 @@ internal sealed class YtService : IYtService
         throw new NotImplementedException();
     }
 
-    public async Task<Result<YtVideoFileInfo>> DownloadYtVideoFile(VideoData videoData, CancellationToken token)
+    public async Task<IResult<YtVideoFileInfo>> DownloadYtVideoFile(VideoData videoData, CancellationToken token)
     {
         var downloadingResult = await Download(videoData, token).TryCatch();
         return downloadingResult.IsError
@@ -104,10 +104,13 @@ internal sealed class YtService : IYtService
             : Result<YtVideoFileInfo>.Success(downloadingResult.Data);
     }
 
-    private async Task<YtVideoFileInfo> Download(VideoData videoData, CancellationToken token)
+    private async Task<IResult<YtVideoFileInfo>> Download(VideoData videoData, CancellationToken token)
     {
         var streamInfo = SelectAudioOnlyStream(await _ytClientFactory.GetYtClient().Videos.Streams
             .GetManifestAsync(videoData.Url, token), videoData.Quality);
+        if (streamInfo == null)
+            return Result<YtVideoFileInfo>.Error(ErrorTypesEnums.NotFound,
+                $"Can not find audio file while downloading for quality {videoData.Quality} and ytId: {videoData.YtId}");
         _directoryProvider.CreateDirectoryIfNotExists(_pathProvider.GetRelativePath(videoData.MainPath));
         var fileName = $"{videoData.YtId}_{videoData.Quality}";
 
@@ -118,17 +121,20 @@ internal sealed class YtService : IYtService
                     _pathProvider.GetVideoFilePath(videoData.MainPath, fileName, streamInfo.Container.ToString())),
                 null, token);
 
-        return new YtVideoFileInfo(fileName, streamInfo.Container.ToString(), streamInfo.Size.Bytes);
+        return Result<YtVideoFileInfo>.Success(new YtVideoFileInfo(fileName,
+            streamInfo.Container.ToString(), streamInfo.Size.Bytes));
     }
 
-    private static IStreamInfo SelectAudioOnlyStream(StreamManifest streamManifests, string quality)
+    private static IStreamInfo SelectAudioOnlyStream(StreamManifest streamManifests, VideoQualityEnum quality)
     {
         IStreamInfo streamInfo = null;
         var streams = streamManifests.GetAudioOnlyStreams().OrderByDescending(x => x.Size).ToList();
-        if (quality == VideoQualityEnum.High.Name)
+        if (quality == VideoQualityEnum.High)
             streamInfo = streams.GetWithHighestBitrate();
-        if (quality == VideoQualityEnum.Low.Name)
+        if (quality == VideoQualityEnum.Mp3)
             streamInfo = streams.FirstOrDefault(x => x.Container.ToString() == "mp3");
-        return streamInfo ??= streams.Last();
+        if (quality == VideoQualityEnum.Low)
+            streamInfo = streams.ElementAt(streams.Count - 2);
+        return streamInfo;
     }
 }

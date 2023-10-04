@@ -5,7 +5,7 @@ namespace Infrastructure.Extensions;
 
 public static class ResultExtensions
 {
-    public static Result<T> LogErrorMessage<T, TService>(this Result<T> result, ILogger<TService> logger,
+    public static IResult<T> LogErrorMessage<T, TService>(this IResult<T> result, ILogger<TService> logger,
         string applyMessage = null) where TService : class
     {
         if (result.IsError && !string.IsNullOrEmpty(result.ErrorMessage))
