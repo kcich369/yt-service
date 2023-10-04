@@ -5,5 +5,5 @@ namespace Domain.Services;
 
 public interface IDownloadYtVideoFilesService
 {
-    Task<Result<bool>> Download(YtVideoId ytVideoId, CancellationToken token);
+    Task<IResult<bool>> Download(YtVideoId ytVideoId, CancellationToken token);
 }

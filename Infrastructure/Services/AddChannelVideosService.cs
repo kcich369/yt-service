@@ -47,7 +47,7 @@ public sealed class AddChannelVideosService : IAddChannelVideosService
     }
 
     [DisableConcurrentExecution(timeoutInSeconds: 60)]
-    public async Task<Result<bool>> ApplyNewVideos(YtChannelId ytChannelId, CancellationToken token)
+    public async Task<IResult<bool>> ApplyNewVideos(YtChannelId ytChannelId, CancellationToken token)
     {
         var ytChannel = await _ytChannelRepository.GetWithVideos(ytChannelId, _configuration.Amount, token);
         if (ytChannel is null)
