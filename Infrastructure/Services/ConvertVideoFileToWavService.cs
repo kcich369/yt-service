@@ -17,6 +17,12 @@ using ServiceBus.Producer.Publisher;
 
 namespace Infrastructure.Services;
 
+static partial class ErrorMessages
+{
+    public static string YtVideoFileWrongQuality(YtVideoFileId ytVideoFileId, string quality) =>
+        $"Given yt video file with id {ytVideoFileId} contains improper quality value: {quality}.";
+}
+
 public sealed class ConvertVideoFileToWavService : IConvertVideoFileToWavService
 {
     private readonly IYtVideoFileRepository _ytVideoFileRepository;
@@ -46,9 +52,11 @@ public sealed class ConvertVideoFileToWavService : IConvertVideoFileToWavService
             return Result<bool>.Success(true);
         if (ytVideoFile.Quality != VideoQualityEnum.High)
             return Result<bool>.Error(ErrorTypesEnums.Validation,
-                $"Given yt video file with id {ytVideoFileId} contains improper quality value.");
+                ErrorMessages.YtVideoFileWrongQuality(ytVideoFileId, ytVideoFile.Quality.ToString())
+            );
 
-        var convertingResult = await _convertFileToWavHelper.ConvertFileToWav(new PathDataDto(ytVideoFile.PathData), token);
+        var convertingResult =
+            await _convertFileToWavHelper.ConvertFileToWav(new PathDataDto(ytVideoFile.PathData), token);
         if (convertingResult.IsError)
             return Result<bool>.Error(convertingResult).LogErrorMessage(_logger);
 

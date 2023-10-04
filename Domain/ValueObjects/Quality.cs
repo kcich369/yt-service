@@ -9,13 +9,17 @@ public class Quality
     private Quality()
     {
     }
-    
+
     public Quality(VideoQualityEnum value)
     {
         Value = value.Name;
     }
-    
-    public static bool operator ==(Quality quality, VideoQualityEnum qualityEnum) => quality!.Value == qualityEnum!.Name;
 
-    public static bool operator !=(Quality quality, VideoQualityEnum qualityEnum) => quality!.Value !=  qualityEnum!.Name;
+    public override string ToString() => Value;
+
+    public static bool operator ==(Quality quality, VideoQualityEnum qualityEnum) =>
+        quality!.Value == qualityEnum!.Name;
+
+    public static bool operator !=(Quality quality, VideoQualityEnum qualityEnum) =>
+        quality!.Value != qualityEnum!.Name;
 }

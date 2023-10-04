@@ -16,6 +16,12 @@ using ServiceBus.Producer.Publisher;
 
 namespace Infrastructure.Services;
 
+static partial class ErrorMessages
+{
+    public static string YtVideFileWavNotExists(YtVideoFileWavId videoFileWavId) =>
+        $"Yt video file wav with given id: {videoFileWavId} does not exist";
+}
+
 public sealed class TranscribeWavFileService : ITranscribeWavFileService
 {
     private readonly IYtVideoFileWavRepository _videoFileWavRepository;
@@ -46,11 +52,12 @@ public sealed class TranscribeWavFileService : ITranscribeWavFileService
         var ytVideoFileWav = await _videoFileWavRepository.GetToTranscription(videoFileWavId, token);
         if (ytVideoFileWav == null)
             return Result<bool>.Error(
-                    ErrorTypesEnums.NotFound, $"Yt video file wav with given id: {videoFileWavId} does not exist")
+                    ErrorTypesEnums.NotFound, ErrorMessages.YtVideFileWavNotExists(videoFileWavId))
                 .LogErrorMessage(_logger);
 
         var transcriptionPathResult =
-            await TranscriptionPathResult(new PathDataDto(ytVideoFileWav.PathData), ytVideoFileWav.Language.CultureValue, token);
+            await TranscriptionPathResult(new PathDataDto(ytVideoFileWav.PathData),
+                ytVideoFileWav.Language.CultureValue, token);
         if (transcriptionPathResult.IsError)
             return Result<bool>.Error(transcriptionPathResult).LogErrorMessage(_logger);
 

@@ -23,6 +23,8 @@ public class Enumeration : IComparable
 
     public static T? GetById<T>(int id) where T : Enumeration =>
         GetAll<T>().FirstOrDefault(x => x.Id == id);
+    public bool IsIn<T>(IEnumerable<T> enums) where T : Enumeration =>
+        enums.Contains(this);
 
 
     public override bool Equals(object obj)

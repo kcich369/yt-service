@@ -14,6 +14,12 @@ using ServiceBus.Producer.Publisher;
 
 namespace Infrastructure.Services;
 
+static partial class ErrorMessages
+{
+    public static string LanguageIsNotSupported =>
+        "Language is not supported";
+}
+
 public sealed class RecogniseLanguageService : IRecogniseLanguageService
 {
     private readonly IYtVideoFileWavRepository _videoFileWavRepository;
@@ -47,8 +53,9 @@ public sealed class RecogniseLanguageService : IRecogniseLanguageService
             return Result<bool>.Error(recogniseLanguageResult).LogErrorMessage(_logger);
         var language = Enumeration.GetAll<SupportedLanguagesEnum>()
             .FirstOrDefault(x => x.CultureValue == recogniseLanguageResult.Data);
-        if(language is null)
-            return Result<bool>.Error(ErrorTypesEnums.Validation, "Language is not supported").LogErrorMessage(_logger);
+        if (language is null)
+            return Result<bool>.Error(ErrorTypesEnums.Validation, ErrorMessages.LanguageIsNotSupported)
+                .LogErrorMessage(_logger);
         ytVideoWav.SetLanguage(language);
         await _messagePublisher.Send(new LanguageRecognised(ytVideoWav.Id, ytVideoWav.Id));
         await _unitOfWork.SaveChangesAsync(token);

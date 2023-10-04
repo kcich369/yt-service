@@ -9,7 +9,6 @@ public sealed class YtVideoFile : Entity<YtVideoFileId>
 {
     public PathData PathData { get; private set; }
     public Quality Quality { get; private set; }
-  
     public int Retries { get; private set; }
     public long Bytes { get; private set; }
     public bool Process { get; private set; }
