@@ -1,10 +1,11 @@
 ﻿using Domain.Helpers;
+using Infrastructure.Helpers.Interfaces;
 using Medallion.Threading.Redis;
 using StackExchange.Redis;
 
 namespace Infrastructure.Helpers;
 
-public sealed class RedisLockHelper : IRedisLockHelper
+internal sealed class RedisLockHelper : IRedisLockHelper
 {
     private readonly IRedisHelper _redisHelper;
     private readonly RedisDistributedLock _lock;

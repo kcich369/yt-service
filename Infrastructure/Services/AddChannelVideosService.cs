@@ -3,7 +3,6 @@ using Domain.Configurations;
 using Domain.Entities;
 using Domain.EntityIds;
 using Domain.Enumerations;
-using Domain.Helpers;
 using Domain.Repositories;
 using Domain.Results;
 using Domain.Services;
@@ -23,7 +22,6 @@ static partial class ErrorMessages
         $"Yt channel with given id {ytChannelId} does not exist";
 }
 
-[DisableConcurrentExecution(timeoutInSeconds: 60)]
 public sealed class AddChannelVideosService : IAddChannelVideosService
 {
     private readonly IYtChannelRepository _ytChannelRepository;
@@ -48,6 +46,7 @@ public sealed class AddChannelVideosService : IAddChannelVideosService
         _messagePublisher = messagePublisher;
     }
 
+    [DisableConcurrentExecution(timeoutInSeconds: 60)]
     public async Task<Result<bool>> ApplyNewVideos(YtChannelId ytChannelId, CancellationToken token)
     {
         var ytChannel = await _ytChannelRepository.GetWithVideos(ytChannelId, _configuration.Amount, token);
@@ -67,7 +66,8 @@ public sealed class AddChannelVideosService : IAddChannelVideosService
 
         ytChannel.AddVideos(newVideos);
         await _unitOfWork.SaveChangesAsync(token);
-        await _messagePublisher.Send(newVideos.Where(x => x.Process).Select(x => new NewVideoCreated(x.Id,ytChannel.Id)));
+        // await _messagePublisher.Send(newVideos.Where(x => x.Process).Select(x => new NewVideoCreated(x.Id,ytChannel.Id)));
+        await _messagePublisher.Send(newVideos.OrderBy(x=>x.Duration).Take(1).Select(x => new NewVideoCreated(x.Id,ytChannel.Id)));
 
         return Result<bool>.Success(true);
     }

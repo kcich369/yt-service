@@ -6,6 +6,6 @@ namespace ServiceBus.Consumer.Extensions;
 
 public static class SubscriptionClientFactoryExtensions
 {
-    public static SubscriptionClient CreateSubscriptionClient(this AzureServiceBusConfiguration configuration, EventsNamesEnums value) =>
-        new (configuration.ConnectionString, configuration.TopicName, value.Name);
+    public static SubscriptionClient CreateSubscriptionClient(this AzureServiceConfiguration configuration, EventsNamesEnums value) =>
+        new (configuration.ServiceBusConnectionString, configuration.TopicName, value.Name);
 }

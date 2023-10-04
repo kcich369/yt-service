@@ -1,6 +1,6 @@
 ﻿using YoutubeReExplode;
 
-namespace ExternalServices.Factories;
+namespace ExternalServices.Factories.Interfaces;
 
 internal interface IYtClientFactory
 {

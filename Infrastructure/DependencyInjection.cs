@@ -4,6 +4,7 @@ using Domain.Providers;
 using Domain.Services;
 using Infrastructure.Extensions;
 using Infrastructure.Helpers;
+using Infrastructure.Helpers.Interfaces;
 using Infrastructure.Mappers;
 using Infrastructure.Providers;
 using Infrastructure.Services;
@@ -20,16 +21,15 @@ public static class DependencyInjection
     {
         serviceCollection.AddSingleton<IDateProvider, DateProvider>();
         serviceCollection.AddSingleton<IPathProvider, PathProvider>();
-        serviceCollection.AddSingleton<IDirectoryProvider, DirectoryProvider>();
-        serviceCollection.AddSingleton<IConvertFileToWavHelper, ConvertFileToWavHelper>();
-        serviceCollection.AddSingleton<ITranscriptionHelper, TranscriptionHelper>();
+        serviceCollection.AddSingleton<ITxtFileHelper, TxtFileHelper>();
         serviceCollection.AddSingleton<IYtVideoMapper, YtVideoMapper>();
-        serviceCollection.AddSingleton<ITranscriptionHelper, TranscriptionHelper>();
         serviceCollection.AddSingleton<IConnectionMultiplexer>(_ =>
             ConnectionMultiplexer.Connect(configuration.ReturnConfigInstance<RedisConfiguration>().ConnectionPort));
 
         serviceCollection.AddScoped<IRedisHelper, RedisHelper>();
         serviceCollection.AddScoped<IRedisLockHelper, RedisLockHelper>();
+        serviceCollection.AddScoped<IDirectoryProvider, DirectoryProvider>();
+        serviceCollection.AddScoped<IConvertFileToWavHelper, ConvertFileToWavHelper>();
         serviceCollection.AddScoped<IMessageHelper, MessageHelper>();
         serviceCollection.AddScoped<IAddChannelVideosService, AddChannelVideosService>();
         serviceCollection.AddScoped<IConvertVideoFileToWavService, ConvertVideoFileToWavService>();

@@ -17,7 +17,6 @@ using ServiceBus.Producer.Publisher;
 
 namespace Infrastructure.Services;
 
-[DisableConcurrentExecution(timeoutInSeconds: 60)]
 public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
 {
     private readonly IYtVideoRepository _ytVideoRepository;
@@ -42,6 +41,7 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
         _messagePublisher = messagePublisher;
     }
 
+    [DisableConcurrentExecution(timeoutInSeconds: 60)]
     public async Task<Result<bool>> Download(YtVideoId ytVideoId, CancellationToken token)
     {
         var ytVideo = await _ytVideoRepository.GetForDownloading(ytVideoId, token);
@@ -53,7 +53,7 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
         //             $"Yt video with given id {ytVideoId} can not be processed.")
         //         .LogErrorMessage(_logger);
 
-        var existedQualities = ytVideo.Files.Select(x => x.Quality).ToList();
+        var existedQualities = ytVideo.Files.Select(x => x.Quality.Value).ToList();
         var mainPath = $@"{_filesDataConfiguration.Path}\{ytVideo.Channel.Name}\{ytVideo.YtId}";
 
         foreach (var quality in Enumeration.GetAll<VideoQualityEnum>())
@@ -74,7 +74,7 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
         }
 
         await _messagePublisher.Send(ytVideo.Process
-            ? ytVideo.Files.Where(x => !existedQualities.Contains(x.Quality))
+            ? ytVideo.Files.Where(x => !existedQualities.Contains(x.Quality.Value) && x.Quality == VideoQualityEnum.High)
                 .Select(x => new VideoDownloaded(x.Id, ytVideo.Id))
             : Enumerable.Empty<VideoDownloaded>());
 

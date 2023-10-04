@@ -1,4 +1,6 @@
-﻿using Domain.Results;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Domain.Results;
 
 namespace ExternalServices.Interfaces;
 

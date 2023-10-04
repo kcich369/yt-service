@@ -1,17 +1,14 @@
-﻿using Domain.Auditable;
-using Domain.Entities.Base;
+﻿using Domain.Entities.Base;
 using Domain.EntityIds;
+using Domain.Enumerations;
 using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
-public sealed class YtVideoFileWav : Entity<YtVideoFileWavId>, ICreated
+public sealed class YtVideoFileWav : Entity<YtVideoFileWavId>
 {
     public PathData PathData { get; private set; }
-    public DateTimeOffset CreatedAt { get; private set; }
-    public UserId CreatedById { get; private set; }
-    public string CreatedBy { get; private set; }
-    public string Language { get; private set; }
+    public Language Language { get; private set; }
     public bool Process { get; private set; }
 
     // relations
@@ -32,12 +29,6 @@ public sealed class YtVideoFileWav : Entity<YtVideoFileWavId>, ICreated
     public static YtVideoFileWav Create(string mainPath) =>
         new(mainPath);
 
-    public void SetCreationData(DateTimeOffset createdAt, UserId createdById, string createdBy)
-    {
-        CreatedAt = createdAt;
-        CreatedById = createdById;
-        CreatedBy = createdBy;
-    }
 
     public YtVideoFileWav AddTranscription(YtVideoTranscription ytVideoTranscription)
     {
@@ -51,9 +42,9 @@ public sealed class YtVideoFileWav : Entity<YtVideoFileWavId>, ICreated
         return this;
     }
 
-    public YtVideoFileWav SetLanguage(string language)
+    public YtVideoFileWav SetLanguage(SupportedLanguagesEnum languageEnum)
     {
-        Language = language;
+        Language = new Language(languageEnum);
         return this;
     }
     
