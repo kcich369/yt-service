@@ -67,7 +67,7 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
         //         .LogErrorMessage(_logger);
 
         var existedQualities = ytVideo.Files.Select(x => x.Quality.Value).ToList();
-        var mainPath = MainPath(ytVideo.Channel.Name, ytVideo.Channel.YtId);
+        var mainPath = MainPath(ytVideo.Channel.Name, ytVideo.YtId);
 
         foreach (var quality in Enumeration.GetAll<VideoQualityEnum>())
         {
@@ -88,21 +88,26 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
                     downloadedResult.Data.Bytes));
         }
 
-        await _messagePublisher.Send(ytVideo.Process
-            ? ytVideo.Files
-                .Where(x => !existedQualities.Contains(x.Quality.Value) && x.Quality == VideoQualityEnum.High)
-                .Select(x => new VideoDownloaded(x.Id, ytVideo.Id))
-            : Enumerable.Empty<VideoDownloaded>());
-
         await _unitOfWork.SaveChangesAsync(token);
+        // await _messagePublisher.Send(CreateMessage(
+        //     ytVideo.Files.Where(x => !existedQualities.Contains(x.Quality.Value)).ToList(), ytVideo.Id));
+        // // await _messagePublisher.Send(ytVideo.Process
+        //     ? CreateMessage(ytVideo.Files.Where(x => !existedQualities.Contains(x.Quality.Value)).ToList(),
+        //         ytVideo.Id)
+        //     : null);
         return Result<bool>.Success(true);
     }
 
     private static bool CheckIfMp3FileExists(IEnumerable<YtVideoFile> ytVideoFiles) =>
         ytVideoFiles.Select(x => x.PathData.FileExtension).Any(x => x == VideoQualityEnum.Mp3.Name.ToLower());
 
-    private string MainPath(string channelName, string channelYtId)
+    private string MainPath(string channelName, string channelYtId) =>
+        $@"{_filesDataConfiguration.Path}\{channelName}\{channelYtId}";
+
+    private static VideoDownloaded CreateMessage(IReadOnlyCollection<YtVideoFile> ytVideoFiles, YtVideoId ytVideoId)
     {
-        return $@"{_filesDataConfiguration.Path}\{channelName}\{channelYtId}";
+        var result = ytVideoFiles.FirstOrDefault(x => x.Quality == VideoQualityEnum.Mp3)
+                     ?? ytVideoFiles.FirstOrDefault(x => x.Quality == VideoQualityEnum.High);
+        return result == null ? null : new VideoDownloaded(result.Id, ytVideoId);
     }
 }

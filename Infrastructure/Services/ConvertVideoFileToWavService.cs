@@ -1,8 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.EntityIds;
 using Domain.Enumerations;
-using Domain.Helpers;
-using Domain.Providers;
+using Domain.Enumerations.Base;
 using Domain.Repositories;
 using Domain.Results;
 using Domain.Services;
@@ -50,20 +49,22 @@ public sealed class ConvertVideoFileToWavService : IConvertVideoFileToWavService
         var ytVideoFile = await _ytVideoFileRepository.GetById(ytVideoFileId, token);
         if (ytVideoFile == null)
             return Result<bool>.Success(true);
-        if (ytVideoFile.Quality != VideoQualityEnum.High)
+        if (!VideoHasValidQuality(Enumeration.GetByName<VideoQualityEnum>(ytVideoFile.Quality.Value)))
             return Result<bool>.Error(ErrorTypesEnums.Validation,
-                ErrorMessages.YtVideoFileWrongQuality(ytVideoFileId, ytVideoFile.Quality.ToString())
-            );
+                ErrorMessages.YtVideoFileWrongQuality(ytVideoFileId, ytVideoFile.Quality.ToString()));
 
-        var convertingResult =
-            await _convertFileToWavHelper.ConvertFileToWav(new PathDataDto(ytVideoFile.PathData), token);
+        var convertingResult = await _convertFileToWavHelper.ConvertFileToWav(new PathDataDto(ytVideoFile.PathData),
+            Enumeration.GetByName<VideoQualityEnum>(ytVideoFile.Quality.Value), token);
         if (convertingResult.IsError)
             return Result<bool>.Error(convertingResult).LogErrorMessage(_logger);
 
         ytVideoFile.AddWavFile(YtVideoFileWav.Create(ytVideoFile.PathData.MainPath)
             .SetFileName(ytVideoFile.PathData.FileName));
         await _unitOfWork.SaveChangesAsync(token);
-        await _messagePublisher.Send(new VideoConverted(ytVideoFile.WavFile.Id, ytVideoFile.Id));
+        // await _messagePublisher.Send(new VideoConverted(ytVideoFile.WavFile.Id, ytVideoFile.Id));
         return Result<bool>.Success(true);
     }
+
+    private static bool VideoHasValidQuality(VideoQualityEnum quality) =>
+        quality.IsIn(new[] { VideoQualityEnum.High, VideoQualityEnum.Mp3 });
 }

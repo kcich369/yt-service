@@ -12,7 +12,7 @@ using Persistence.Context;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231003192440_InitialDb")]
+    [Migration("20231004193838_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -74,10 +74,6 @@ namespace Persistence.Migrations
 
                     b.Property<TimeSpan?>("Duration")
                         .HasColumnType("time");
-
-                    b.Property<string>("LanguageCulture")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(150)

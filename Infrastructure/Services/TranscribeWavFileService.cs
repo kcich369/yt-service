@@ -51,13 +51,11 @@ public sealed class TranscribeWavFileService : ITranscribeWavFileService
     {
         var ytVideoFileWav = await _videoFileWavRepository.GetToTranscription(videoFileWavId, token);
         if (ytVideoFileWav == null)
-            return Result<bool>.Error(
-                    ErrorTypesEnums.NotFound, ErrorMessages.YtVideFileWavNotExists(videoFileWavId))
+            return Result<bool>.Error(ErrorTypesEnums.NotFound, ErrorMessages.YtVideFileWavNotExists(videoFileWavId))
                 .LogErrorMessage(_logger);
 
-        var transcriptionPathResult =
-            await TranscriptionPathResult(new PathDataDto(ytVideoFileWav.PathData),
-                ytVideoFileWav.Language.CultureValue, token);
+        var transcriptionPathResult = await TranscriptionPathResult(new PathDataDto(ytVideoFileWav.PathData),
+            ytVideoFileWav.Language.CultureValue, token);
         if (transcriptionPathResult.IsError)
             return Result<bool>.Error(transcriptionPathResult).LogErrorMessage(_logger);
 

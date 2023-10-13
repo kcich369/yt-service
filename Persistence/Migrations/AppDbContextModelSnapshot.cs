@@ -72,10 +72,6 @@ namespace Persistence.Migrations
                     b.Property<TimeSpan?>("Duration")
                         .HasColumnType("time");
 
-                    b.Property<string>("LanguageCulture")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.Property<string>("Name")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");

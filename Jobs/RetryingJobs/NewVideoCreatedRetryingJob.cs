@@ -25,7 +25,7 @@ public sealed class NewVideoCreatedRetryingJob : INewVideoCreatedRetryingJob
 
     public async Task Execute()
     {
-        var filesCount = Enumeration.GetAll<VideoQualityEnum>().Count();
+        var filesCount = Enumeration.GetAll<VideoQualityEnum>().Except(new List<VideoQualityEnum>(VideoQualityEnum.Mp3)).Count();
         var videos = await _dbContext.Set<YtVideo>()
             .Where(x => x.Process && x.Files.Count() < filesCount)
             .Select(x => new NewVideoCreated(x.Id, null))

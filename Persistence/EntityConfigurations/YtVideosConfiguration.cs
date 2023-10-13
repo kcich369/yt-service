@@ -16,7 +16,6 @@ public class YtVideosConfiguration : EntityConfiguration<YtVideo, YtVideoId>
         builder.Property(x => x.Name).HasMaxLength(150);
         builder.Property(x => x.YtId).HasMaxLength(100);
         builder.Property(x => x.Url).HasMaxLength(200);
-        builder.Property(x => x.LanguageCulture).HasMaxLength(10);
 
         builder.HasOne(x => x.Channel)
             .WithMany(y => y.Videos)

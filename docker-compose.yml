@@ -1,0 +1,6 @@
+﻿services:
+  webapi:
+    image: yt-service-api
+    build:
+      context: .
+      dockerfile: WebApi/Dockerfile

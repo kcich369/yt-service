@@ -11,8 +11,6 @@ public sealed class YtVideo : Entity<YtVideoId>
     public string Url { get; private init; }
     public TimeSpan? Duration { get; private set; }
     public bool Process { get;  private set; }
-    public string LanguageCulture { get;  private set; }
-
 
     //relations
     public YtChannelId ChannelId { get; private set; }

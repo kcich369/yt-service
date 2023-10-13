@@ -44,7 +44,6 @@ namespace Persistence.Migrations
                     Url = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: true),
                     Process = table.Column<bool>(type: "bit", nullable: false),
-                    LanguageCulture = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
                     ChannelId = table.Column<string>(type: "nvarchar(26)", nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     CreatedById = table.Column<string>(type: "nvarchar(26)", nullable: true),

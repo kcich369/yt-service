@@ -67,7 +67,8 @@ public sealed class AddChannelVideosService : IAddChannelVideosService
         ytChannel.AddVideos(newVideos);
         await _unitOfWork.SaveChangesAsync(token);
         // await _messagePublisher.Send(newVideos.Where(x => x.Process).Select(x => new NewVideoCreated(x.Id,ytChannel.Id)));
-        await _messagePublisher.Send(newVideos.OrderBy(x=>x.Duration).Take(1).Select(x => new NewVideoCreated(x.Id,ytChannel.Id)));
+        await _messagePublisher.Send(newVideos.OrderBy(x => x.Duration).Take(10)
+            .Select(x => new NewVideoCreated(x.Id, ytChannel.Id)));
 
         return Result<bool>.Success(true);
     }

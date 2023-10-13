@@ -26,8 +26,8 @@ public class PathDataDto
 
     public PathDataDto ConvertTo(string newFileExtension)
     {
-        FileExtension = newFileExtension;
         FullValue = FullValue.Replace(FileExtension, newFileExtension);
+        FileExtension = newFileExtension;
         return this;
     }
 }

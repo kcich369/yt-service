@@ -18,7 +18,7 @@ public sealed class YtVideoDataMapper : IYtVideoDataMapper
         // : ytVideos.ToBlockingEnumerable(token).Select(Map).ToList();
 
 
-    private async Task<IList<YtVideoData>> Convert(IAsyncEnumerable<PlaylistVideo> ytVideos)
+    private static async Task<IList<YtVideoData>> Convert(IAsyncEnumerable<PlaylistVideo> ytVideos)
     {
         var videos = new List<YtVideoData>();
         await foreach (var video in ytVideos)
