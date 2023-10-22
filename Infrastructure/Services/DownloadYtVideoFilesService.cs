@@ -61,10 +61,10 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
         if (ytVideo is null)
             return Result<bool>.Error(ErrorTypesEnums.BadRequest, ErrorMessages.YtVideoNotExists(ytVideoId))
                 .LogErrorMessage(_logger);
-        // if (!ytVideo.Process)
-        //     return Result<bool>.Error(ErrorTypesEnums.BadRequest,
-        //             ErrorMessages.DownloadingValidationError(ytVideoId))
-        //         .LogErrorMessage(_logger);
+        if (!ytVideo.Process)
+            return Result<bool>.Error(ErrorTypesEnums.BadRequest,
+                    ErrorMessages.DownloadingValidationError(ytVideoId))
+                .LogErrorMessage(_logger);
 
         var existedQualities = ytVideo.Files.Select(x => x.Quality.Value).ToList();
         var mainPath = MainPath(ytVideo.Channel.Name, ytVideo.YtId);
@@ -94,7 +94,6 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
             : Enumerable.Empty<VideoDownloaded>());
 
         await _unitOfWork.SaveChangesAsync(token);
-        Thread.Sleep(5000);
         return Result<bool>.Success(true);
     }
 

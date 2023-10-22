@@ -39,7 +39,7 @@ public static class DependencyInjection
         serviceCollection.AddHangfireServer(x =>
         {
             x.Queues = Enumeration.GetAll<HangfireQueuesEnum>().Select(y=>y.Name).ToArray();
-            x.WorkerCount = 2;
+            x.WorkerCount = config.Workers;
         });
 
         return serviceCollection;
