@@ -1,4 +1,6 @@
 ﻿using Domain.Configurations;
+using Domain.Enumerations;
+using Domain.Enumerations.Base;
 using Hangfire;
 using Jobs.RetryingJobs;
 using Jobs.RetryingJobs.Interfaces;
@@ -9,15 +11,23 @@ namespace Jobs;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection RegisterJobs(this IServiceCollection serviceCollection,
-        string hangfireConnectionString, JobsConfiguration config)
+    public static IServiceCollection RegisterJobs(this IServiceCollection serviceCollection,JobsConfiguration config)
     {
+        if (config.DisableAll)
+            return serviceCollection;
         serviceCollection.AddScoped<IChannelCreatedRetryingJob, ChannelCreatedRetryingJob>();
         serviceCollection.AddScoped<ILanguageRecognisedRetryingJob, LanguageRecognisedRetryingJob>();
         serviceCollection.AddScoped<INewVideoCreatedRetryingJob, NewVideoCreatedRetryingJob>();
         serviceCollection.AddScoped<IVideoConvertedRetryingJob, VideoConvertedRetryingJob>();
         serviceCollection.AddScoped<IVideoDownloadedRetryingJob, VideoDownloadedRetryingJob>();
         serviceCollection.AddScoped<IVideoTranscribedRetryingJob, VideoTranscribedRetryingJob>();
+
+        return serviceCollection;
+    }
+
+    public static IServiceCollection AddHangfire(this IServiceCollection serviceCollection,
+        string hangfireConnectionString, JobsConfiguration config)
+    {
         if (config.DisableAll)
             return serviceCollection;
         serviceCollection.AddHangfire(conf => conf
@@ -25,8 +35,13 @@ public static class DependencyInjection
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
             .UseSqlServerStorage(hangfireConnectionString));
-        serviceCollection.AddHangfireServer();
-        
+
+        serviceCollection.AddHangfireServer(x =>
+        {
+            x.Queues = Enumeration.GetAll<HangfireQueuesEnum>().Select(y=>y.Name).ToArray();
+            x.WorkerCount = config.Workers;
+        });
+
         return serviceCollection;
     }
 

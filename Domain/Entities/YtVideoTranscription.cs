@@ -5,12 +5,9 @@ using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
-public sealed class YtVideoTranscription : Entity<YtVideoTranscriptionId>, ICreated
+public sealed class YtVideoTranscription : Entity<YtVideoTranscriptionId>, ICreationInfo
 {
     public PathData PathData { get; private set; }
-    public DateTimeOffset CreatedAt { get; private set; }
-    public UserId CreatedById { get; private set; }
-    public string CreatedBy { get; private set; }
     public bool Process { get; private set; }
 
     // relations
@@ -30,13 +27,6 @@ public sealed class YtVideoTranscription : Entity<YtVideoTranscriptionId>, ICrea
 
     public static YtVideoTranscription Create(string mainPath) =>
         new(mainPath);
-
-    public void SetCreationData(DateTimeOffset createdAt, UserId createdById, string createdBy)
-    {
-        CreatedAt = createdAt;
-        CreatedById = createdById;
-        CreatedBy = createdBy;
-    }
 
     public YtVideoTranscription SetFileName(string fileName)
     {

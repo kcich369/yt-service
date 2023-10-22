@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Domain.EntityIds;
+using Domain.Enumerations;
 using Domain.Helpers;
 using Domain.Results;
 using Domain.Services;
@@ -24,7 +25,7 @@ public sealed class NewVideoCreatedConsumer : QueueConsumerBackgroundService
         var newVideoCreated = JsonSerializer.Deserialize<NewVideoCreated>(message);
         if ((await HandleMessage(newVideoCreated)).Data)
             return;
-        BackgroundJob.Enqueue<IDownloadYtVideoFilesService>(service =>
+        BackgroundJob.Enqueue<IDownloadYtVideoFilesService>(HangfireQueuesEnum.Downloading.Name, service =>
             service.Download(newVideoCreated.Id, token));
     }
 }

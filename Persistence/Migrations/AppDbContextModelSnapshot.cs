@@ -27,18 +27,6 @@ namespace Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(26)");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("CreatedById")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(26)");
-
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
@@ -49,13 +37,6 @@ namespace Persistence.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("UpdatedById")
-                        .HasColumnType("nvarchar(26)");
 
                     b.Property<string>("Url")
                         .HasMaxLength(150)
@@ -85,18 +66,6 @@ namespace Persistence.Migrations
                     b.Property<string>("ChannelId")
                         .HasColumnType("nvarchar(26)");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("CreatedById")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(26)");
-
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
@@ -113,16 +82,6 @@ namespace Persistence.Migrations
 
                     b.Property<bool>("Process")
                         .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("UpdatedById")
-                        .HasColumnType("nvarchar(26)");
 
                     b.Property<string>("Url")
                         .HasMaxLength(200)
@@ -155,12 +114,9 @@ namespace Persistence.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedById")
-                        .IsRequired()
                         .HasColumnType("nvarchar(26)");
 
                     b.Property<bool>("Deleted")
@@ -193,7 +149,17 @@ namespace Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[YtVideoTranscriptionId] IS NOT NULL");
 
-                    b.ToTable("YtVideoDescriptions", (string)null);
+                    b.ToTable("YtVideoDescriptions", null, t =>
+                        {
+                            t.Property("CreatedAt")
+                                .HasColumnName("YtVideoDescription_CreatedAt");
+
+                            t.Property("CreatedBy")
+                                .HasColumnName("YtVideoDescription_CreatedBy");
+
+                            t.Property("CreatedById")
+                                .HasColumnName("YtVideoDescription_CreatedById");
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.YtVideoFile", b =>
@@ -204,39 +170,14 @@ namespace Persistence.Migrations
                     b.Property<long>("Bytes")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("CreatedById")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(26)");
-
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("Process")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Quality")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Retries")
                         .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("UpdatedById")
-                        .HasColumnType("nvarchar(26)");
 
                     b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
@@ -258,23 +199,8 @@ namespace Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(26)");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("CreatedById")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(26)");
-
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Process")
                         .HasColumnType("bit");
@@ -299,18 +225,6 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.YtVideoTag", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(26)");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("CreatedById")
-                        .IsRequired()
                         .HasColumnType("nvarchar(26)");
 
                     b.Property<bool>("Deleted")
@@ -351,18 +265,6 @@ namespace Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(26)");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("CreatedById")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(26)");
-
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
@@ -386,13 +288,136 @@ namespace Persistence.Migrations
                     b.ToTable("YtVideoTranscriptions", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.YtChannel", b =>
+                {
+                    b.OwnsOne("Domain.ValueObjects.CreationInfo", "CreationInfo", b1 =>
+                        {
+                            b1.Property<string>("YtChannelId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset>("CreatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("CreatedAt");
+
+                            b1.Property<string>("CreatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("CreatedBy");
+
+                            b1.Property<string>("CreatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("CreatedById");
+
+                            b1.HasKey("YtChannelId");
+
+                            b1.ToTable("YtChannels");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtChannelId");
+                        });
+
+                    b.OwnsOne("Domain.ValueObjects.UpdateInfo", "UpdateInfo", b1 =>
+                        {
+                            b1.Property<string>("YtChannelId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset?>("UpdatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("UpdatedAt");
+
+                            b1.Property<string>("UpdatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("UpdatedBy");
+
+                            b1.Property<string>("UpdatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("UpdatedById");
+
+                            b1.HasKey("YtChannelId");
+
+                            b1.ToTable("YtChannels");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtChannelId");
+                        });
+
+                    b.Navigation("CreationInfo");
+
+                    b.Navigation("UpdateInfo");
+                });
+
             modelBuilder.Entity("Domain.Entities.YtVideo", b =>
                 {
                     b.HasOne("Domain.Entities.YtChannel", "Channel")
                         .WithMany("Videos")
                         .HasForeignKey("ChannelId");
 
+                    b.OwnsOne("Domain.ValueObjects.CreationInfo", "CreationInfo", b1 =>
+                        {
+                            b1.Property<string>("YtVideoId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset>("CreatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("CreatedAt");
+
+                            b1.Property<string>("CreatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("CreatedBy");
+
+                            b1.Property<string>("CreatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("CreatedById");
+
+                            b1.HasKey("YtVideoId");
+
+                            b1.ToTable("YtVideos");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoId");
+                        });
+
+                    b.OwnsOne("Domain.ValueObjects.UpdateInfo", "UpdateInfo", b1 =>
+                        {
+                            b1.Property<string>("YtVideoId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset?>("UpdatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("UpdatedAt");
+
+                            b1.Property<string>("UpdatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("UpdatedBy");
+
+                            b1.Property<string>("UpdatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("UpdatedById");
+
+                            b1.HasKey("YtVideoId");
+
+                            b1.ToTable("YtVideos");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoId");
+                        });
+
                     b.Navigation("Channel");
+
+                    b.Navigation("CreationInfo");
+
+                    b.Navigation("UpdateInfo");
                 });
 
             modelBuilder.Entity("Domain.Entities.YtVideoDescription", b =>
@@ -406,6 +431,66 @@ namespace Persistence.Migrations
                         .WithOne("Description")
                         .HasForeignKey("Domain.Entities.YtVideoDescription", "YtVideoTranscriptionId");
 
+                    b.OwnsOne("Domain.ValueObjects.CreationInfo", "CreationInfo", b1 =>
+                        {
+                            b1.Property<string>("YtVideoDescriptionId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset>("CreatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("CreatedAt");
+
+                            b1.Property<string>("CreatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("CreatedBy");
+
+                            b1.Property<string>("CreatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("CreatedById");
+
+                            b1.HasKey("YtVideoDescriptionId");
+
+                            b1.ToTable("YtVideoDescriptions");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoDescriptionId");
+                        });
+
+                    b.OwnsOne("Domain.ValueObjects.UpdateInfo", "UpdateInfo", b1 =>
+                        {
+                            b1.Property<string>("YtVideoDescriptionId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset?>("UpdatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("UpdatedAt");
+
+                            b1.Property<string>("UpdatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("UpdatedBy");
+
+                            b1.Property<string>("UpdatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("UpdatedById");
+
+                            b1.HasKey("YtVideoDescriptionId");
+
+                            b1.ToTable("YtVideoDescriptions");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoDescriptionId");
+                        });
+
+                    b.Navigation("CreationInfo");
+
+                    b.Navigation("UpdateInfo");
+
                     b.Navigation("YtVideo");
 
                     b.Navigation("YtVideoTranscription");
@@ -416,6 +501,34 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.YtVideo", "Video")
                         .WithMany("Files")
                         .HasForeignKey("VideoId");
+
+                    b.OwnsOne("Domain.ValueObjects.CreationInfo", "CreationInfo", b1 =>
+                        {
+                            b1.Property<string>("YtVideoFileId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset>("CreatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("CreatedAt");
+
+                            b1.Property<string>("CreatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("CreatedBy");
+
+                            b1.Property<string>("CreatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("CreatedById");
+
+                            b1.HasKey("YtVideoFileId");
+
+                            b1.ToTable("YtVideoFiles");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoFileId");
+                        });
 
                     b.OwnsOne("Domain.ValueObjects.PathData", "PathData", b1 =>
                         {
@@ -451,7 +564,60 @@ namespace Persistence.Migrations
                                 .HasForeignKey("YtVideoFileId");
                         });
 
+                    b.OwnsOne("Domain.ValueObjects.UpdateInfo", "UpdateInfo", b1 =>
+                        {
+                            b1.Property<string>("YtVideoFileId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset?>("UpdatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("UpdatedAt");
+
+                            b1.Property<string>("UpdatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("UpdatedBy");
+
+                            b1.Property<string>("UpdatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("UpdatedById");
+
+                            b1.HasKey("YtVideoFileId");
+
+                            b1.ToTable("YtVideoFiles");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoFileId");
+                        });
+
+                    b.OwnsOne("Domain.ValueObjects.Quality", "Quality", b1 =>
+                        {
+                            b1.Property<string>("YtVideoFileId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(10)
+                                .HasColumnType("nvarchar(10)")
+                                .HasColumnName("Quality");
+
+                            b1.HasKey("YtVideoFileId");
+
+                            b1.ToTable("YtVideoFiles");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoFileId");
+                        });
+
+                    b.Navigation("CreationInfo");
+
                     b.Navigation("PathData");
+
+                    b.Navigation("Quality");
+
+                    b.Navigation("UpdateInfo");
 
                     b.Navigation("Video");
                 });
@@ -461,6 +627,34 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.YtVideoFile", "YtVideoFile")
                         .WithOne("WavFile")
                         .HasForeignKey("Domain.Entities.YtVideoFileWav", "YtVideoFileId");
+
+                    b.OwnsOne("Domain.ValueObjects.CreationInfo", "CreationInfo", b1 =>
+                        {
+                            b1.Property<string>("YtVideoFileWavId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset>("CreatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("CreatedAt");
+
+                            b1.Property<string>("CreatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("CreatedBy");
+
+                            b1.Property<string>("CreatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("CreatedById");
+
+                            b1.HasKey("YtVideoFileWavId");
+
+                            b1.ToTable("YtVideoFileWavs");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoFileWavId");
+                        });
 
                     b.OwnsOne("Domain.ValueObjects.PathData", "PathData", b1 =>
                         {
@@ -496,7 +690,66 @@ namespace Persistence.Migrations
                                 .HasForeignKey("YtVideoFileWavId");
                         });
 
+                    b.OwnsOne("Domain.ValueObjects.UpdateInfo", "UpdateInfo", b1 =>
+                        {
+                            b1.Property<string>("YtVideoFileWavId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset?>("UpdatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("UpdatedAt");
+
+                            b1.Property<string>("UpdatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("UpdatedBy");
+
+                            b1.Property<string>("UpdatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("UpdatedById");
+
+                            b1.HasKey("YtVideoFileWavId");
+
+                            b1.ToTable("YtVideoFileWavs");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoFileWavId");
+                        });
+
+                    b.OwnsOne("Domain.ValueObjects.Language", "Language", b1 =>
+                        {
+                            b1.Property<string>("YtVideoFileWavId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<string>("CultureValue")
+                                .IsRequired()
+                                .HasMaxLength(10)
+                                .HasColumnType("nvarchar(10)")
+                                .HasColumnName("Language_CultureValue");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("Language_Name");
+
+                            b1.HasKey("YtVideoFileWavId");
+
+                            b1.ToTable("YtVideoFileWavs");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoFileWavId");
+                        });
+
+                    b.Navigation("CreationInfo");
+
+                    b.Navigation("Language");
+
                     b.Navigation("PathData");
+
+                    b.Navigation("UpdateInfo");
 
                     b.Navigation("YtVideoFile");
                 });
@@ -512,6 +765,66 @@ namespace Persistence.Migrations
                         .WithOne("Tag")
                         .HasForeignKey("Domain.Entities.YtVideoTag", "YtVideoTranscriptionId");
 
+                    b.OwnsOne("Domain.ValueObjects.CreationInfo", "CreationInfo", b1 =>
+                        {
+                            b1.Property<string>("YtVideoTagId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset>("CreatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("CreatedAt");
+
+                            b1.Property<string>("CreatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("CreatedBy");
+
+                            b1.Property<string>("CreatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("CreatedById");
+
+                            b1.HasKey("YtVideoTagId");
+
+                            b1.ToTable("YtVideoTags");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoTagId");
+                        });
+
+                    b.OwnsOne("Domain.ValueObjects.UpdateInfo", "UpdateInfo", b1 =>
+                        {
+                            b1.Property<string>("YtVideoTagId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset?>("UpdatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("UpdatedAt");
+
+                            b1.Property<string>("UpdatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("UpdatedBy");
+
+                            b1.Property<string>("UpdatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("UpdatedById");
+
+                            b1.HasKey("YtVideoTagId");
+
+                            b1.ToTable("YtVideoTags");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoTagId");
+                        });
+
+                    b.Navigation("CreationInfo");
+
+                    b.Navigation("UpdateInfo");
+
                     b.Navigation("YtVideo");
 
                     b.Navigation("YtVideoTranscription");
@@ -522,6 +835,34 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.YtVideoFileWav", "WavFile")
                         .WithOne("YtVideoTranscription")
                         .HasForeignKey("Domain.Entities.YtVideoTranscription", "WavFileId");
+
+                    b.OwnsOne("Domain.ValueObjects.CreationInfo", "CreationInfo", b1 =>
+                        {
+                            b1.Property<string>("YtVideoTranscriptionId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset>("CreatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("CreatedAt");
+
+                            b1.Property<string>("CreatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("CreatedBy");
+
+                            b1.Property<string>("CreatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("CreatedById");
+
+                            b1.HasKey("YtVideoTranscriptionId");
+
+                            b1.ToTable("YtVideoTranscriptions");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoTranscriptionId");
+                        });
 
                     b.OwnsOne("Domain.ValueObjects.PathData", "PathData", b1 =>
                         {
@@ -557,7 +898,39 @@ namespace Persistence.Migrations
                                 .HasForeignKey("YtVideoTranscriptionId");
                         });
 
+                    b.OwnsOne("Domain.ValueObjects.UpdateInfo", "UpdateInfo", b1 =>
+                        {
+                            b1.Property<string>("YtVideoTranscriptionId")
+                                .HasColumnType("nvarchar(26)");
+
+                            b1.Property<DateTimeOffset?>("UpdatedAt")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("UpdatedAt");
+
+                            b1.Property<string>("UpdatedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("UpdatedBy");
+
+                            b1.Property<string>("UpdatedById")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(26)")
+                                .HasColumnName("UpdatedById");
+
+                            b1.HasKey("YtVideoTranscriptionId");
+
+                            b1.ToTable("YtVideoTranscriptions");
+
+                            b1.WithOwner()
+                                .HasForeignKey("YtVideoTranscriptionId");
+                        });
+
+                    b.Navigation("CreationInfo");
+
                     b.Navigation("PathData");
+
+                    b.Navigation("UpdateInfo");
 
                     b.Navigation("WavFile");
                 });

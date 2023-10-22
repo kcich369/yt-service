@@ -4,7 +4,7 @@ using Domain.EntityIds;
 
 namespace Domain.Entities;
 
-public sealed class YtVideoDescription : Entity<YtVideoDescriptionId>, ICreated
+public sealed class YtVideoDescription : Entity<YtVideoDescriptionId>
 {
     public string Description { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }

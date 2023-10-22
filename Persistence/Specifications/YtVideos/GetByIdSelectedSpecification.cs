@@ -17,7 +17,7 @@ public sealed class GetByIdSelectedSpecification : SelectedSpecification<YtVideo
             {
                 Id = f.Id.ToString(),
                 Url = f.PathData.FullValue,
-                Quality = f.Quality
+                Quality = f.Quality.Value
             })
         })
     {

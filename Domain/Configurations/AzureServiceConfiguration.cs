@@ -2,9 +2,10 @@
 
 namespace Domain.Configurations;
 
-public sealed class AzureServiceConfiguration: IConfiguration
+public sealed class AzureServiceConfiguration : IConfiguration
 {
-    public string Key { get; set; }
+    public string ServiceBusConnectionString { get; set; }
+    public string TopicName { get; set; }
+    public string SubscriptionKey { get; set; }
     public string Region { get; set; }
-    public Ulid Value { get; set;}
 }

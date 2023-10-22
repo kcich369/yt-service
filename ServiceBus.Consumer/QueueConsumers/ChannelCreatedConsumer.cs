@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using Domain.EntityIds;
+using Domain.Enumerations;
 using Domain.Helpers;
 using Domain.Services;
 using Hangfire;
+using Hangfire.States;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceBus.Consumer.QueueConsumers.Base;
 using ServiceBus.Producer.Enumeration;
@@ -22,7 +24,7 @@ public sealed class ChannelCreatedConsumer : QueueConsumerBackgroundService
         var channelCreated = JsonSerializer.Deserialize<ChannelCreated>(message);
         if ((await HandleMessage(channelCreated)).Data)
             return;
-        BackgroundJob.Enqueue<IAddChannelVideosService>((service) => service
+        BackgroundJob.Enqueue<IAddChannelVideosService>(HangfireQueuesEnum.NewVideos.Name, (service) => service
             .ApplyNewVideos(channelCreated.Id, token));
     }
 }

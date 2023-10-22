@@ -1,11 +1,11 @@
 ﻿using Domain.Entities.Base;
-using Domain.EntityIds;
 using Domain.EntityIds.Base;
 using Domain.Exceptions;
+using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Persistence.EntityConfigurations.Common.Converters;
-using Persistence.EntityConfigurations.Common.Properties;
+using Persistence.ValueObjectConfiguration;
 
 namespace Persistence.EntityConfigurations.Common;
 
@@ -29,10 +29,11 @@ public abstract class EntityConfiguration<T, TId> : IEntityTypeConfiguration<T>
         builder.HasQueryFilter(x => !x.Deleted);
         builder.Property(x => x.Version).IsRowVersion().ValueGeneratedOnAddOrUpdate();
 
-        builder.SetAuditablePropertiesDbConstraints();
+        builder.OwnsOne(x => x.CreationInfo, ow => ow.ConfigureCreationInfo());
+        builder.OwnsOne(x => x.UpdateInfo, ow => ow.ConfigureUpdateInfo());
         builder.SetConverters();
         ConfigureEntity(builder);
-    } 
+    }
 
     protected abstract void ConfigureEntity(EntityTypeBuilder<T> builder);
 }

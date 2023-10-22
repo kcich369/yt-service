@@ -2,7 +2,7 @@
 
 public class PathData
 {
-    public string MainPath { get; }
+    public string MainPath { get; private set;}
     public string FileName { get; private set; }
     public string FileExtension { get; private set; }
     public string FullValue { get; private set; }
@@ -10,7 +10,6 @@ public class PathData
     public PathData(string mainPath)
     {
         MainPath = mainPath;
-        FullValue = null;
     }
 
     public sealed override string ToString() => $@"{MainPath}\{FileName}.{FileExtension}";
@@ -19,6 +18,7 @@ public class PathData
     {
         FileName = fileName;
         FileExtension = fileExtension;
+        FullValue = ToString();
         return this;
     }
 }

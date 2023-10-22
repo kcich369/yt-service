@@ -17,20 +17,9 @@ namespace Presentation.Controllers;
 [Route("ytchannels")]
 public class YtChannelsController : ApiController
 {
-    private readonly IAppDbContext _dbContext;
-    private readonly IDownloadYtVideoFilesService _downloadYtVideoFilesService;
-    private readonly IAddChannelVideosService _channelVideosService;
-
-    public YtChannelsController(IMediator mediator,
-        IAppDbContext dbContext,
-        IDownloadYtVideoFilesService downloadYtVideoFilesService,
-        IAddChannelVideosService channelVideosService) : base(mediator)
+    public YtChannelsController(IMediator mediator) : base(mediator)
     {
-        _dbContext = dbContext;
-        _downloadYtVideoFilesService = downloadYtVideoFilesService;
-        _channelVideosService = channelVideosService;
     }
-
 
     [HttpPost]
     [SwaggerOperation(Summary = "Create yt channel", Description = "As response list of videos")]
@@ -39,32 +28,7 @@ public class YtChannelsController : ApiController
     public async Task<IActionResult> Create(CreateYtChannelDto createYtChannelDto, CancellationToken token) =>
         await Mediator.Send(new CreateYtChannelCommand(createYtChannelDto), token).ToActionResult();
 
-    [HttpPost("save/{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> SaveAll(string id, CancellationToken token)
-    {
-        await _downloadYtVideoFilesService.Download(new YtVideoId(id),token);
-        return Ok("Ok");
-    }
-
-    [HttpPost("save-all")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> SaveAll(CancellationToken token)
-    {
-        var stopWatch = new Stopwatch();
-        stopWatch.Start();
-        stopWatch.Stop();
-        return Ok(new { Time = stopWatch.Elapsed });
-    }
-
-    [HttpPost("apply-new-videos/{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> ApplyNewVideos(string id, CancellationToken token)
-    {
-        await _channelVideosService.ApplyNewVideos(new YtChannelId(id), token);
-        return Ok("Ok");
-    }
-
+   
     [HttpGet("{id}/video-names")]
     [SwaggerOperation(Summary = "Create yt channel", Description = "As response list of videos")]
     [ProducesResponseType(StatusCodes.Status200OK)]

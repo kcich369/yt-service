@@ -14,11 +14,11 @@ public sealed class UpdatingAuditableEntitiesInterceptor : SaveChangesIntercepto
         if (context is null)
             return base.SavingChangesAsync(eventData, result, cancellationToken);
         
-        var entries = context.ChangeTracker.Entries<IUpdated>();
+        var entries = context.ChangeTracker.Entries<IUpdateInfo>();
         foreach (var entry in entries)
         {
             if (entry.State == EntityState.Modified)
-                entry.Entity.SetUpdatedData(DateTimeOffset.Now, UserId.GetUserId(), "admin");
+                entry.Entity.SetUpdateInfoData(DateTimeOffset.Now, UserId.GetUserId(), "admin");
         }
 
         return base.SavingChangesAsync(eventData, result, cancellationToken);

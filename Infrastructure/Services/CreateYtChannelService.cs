@@ -18,7 +18,7 @@ namespace Infrastructure.Services;
 
 public static partial class ErrorMessages
 {
-    public static string AlreadyExist(string name, string ytId) =>
+    public static string ChannelAlreadyExist(string name, string ytId) =>
         $"Yt Channel with given name: {name} and ytId: {ytId} already exists.";
 }
 
@@ -65,7 +65,6 @@ public sealed class CreateYtChannelService : ICreateYtChannelWithVideosService
         _directoryProvider.CreateDirectoryIfNotExists(
             _pathProvider.GetRelativePath(_pathProvider.GetChannelPath(channel.Data.Name)));
         await _messagePublisher.Send(new ChannelCreated(newChannelId));
-       
         return Result<YtChannelVideosDto>.Success(new YtChannelVideosDto(newChannelId, channel.Data.Name,
             channel.Data.YtId, null));
     }
@@ -73,7 +72,7 @@ public sealed class CreateYtChannelService : ICreateYtChannelWithVideosService
     private async Task<IResult<bool>> Exist(string ytId, string name, CancellationToken token) =>
         await _ytChannelRepository.YtIdExists(ytId, token)
             ? Result<bool>.Error(ErrorTypesEnums.BadRequest,
-                    ErrorMessages.AlreadyExist(name, ytId))
+                    ErrorMessages.ChannelAlreadyExist(name, ytId))
                 .LogErrorMessage(_logger)
             : Result<bool>.Success(true);
 }
