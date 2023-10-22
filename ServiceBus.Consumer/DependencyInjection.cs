@@ -13,11 +13,13 @@ public static class DependencyInjection
             return serviceCollection;
 
         serviceCollection.AddHostedService<ChannelCreatedConsumer>();
+        
         serviceCollection.AddHostedService<LanguageRecognisedConsumer>();
         serviceCollection.AddHostedService<NewVideoCreatedConsumer>();
         serviceCollection.AddHostedService<VideoConvertedConsumer>();
         serviceCollection.AddHostedService<VideoDataAddedConsumer>();
         serviceCollection.AddHostedService<VideoDownloadedConsumer>();
+        
         serviceCollection.AddHostedService<VideoTranscribedConsumer>();
 
         return serviceCollection;
