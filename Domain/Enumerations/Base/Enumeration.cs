@@ -44,6 +44,8 @@ public class Enumeration : IComparable
 
     public static implicit operator int(Enumeration enumeration) => enumeration.Id;
 
+    public static implicit operator string(Enumeration enumeration) => enumeration.Name;
+
     public static bool operator ==(Enumeration enum1, Enumeration enum2) => enum1!.Id == enum2!.Id;
 
     public static bool operator !=(Enumeration enum1, Enumeration enum2) => enum1!.Id != enum2!.Id;

@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Domain.EntityIds;
+using Domain.Enumerations;
 using Domain.Helpers;
 using Domain.Services;
 using Hangfire;
@@ -22,7 +23,7 @@ public sealed class VideoConvertedConsumer : QueueConsumerBackgroundService
         var newVideoCreated = JsonSerializer.Deserialize<VideoConverted>(message);
         if ((await HandleMessage(newVideoCreated)).Data)
             return;
-        BackgroundJob.Enqueue<IRecogniseLanguageService>((service) => service
-            .Recognise(newVideoCreated.Id, token));
+        BackgroundJob.Enqueue<IRecogniseLanguageService>(HangfireQueuesEnum.RecognisingLanguage.Name, (service) =>
+            service.Recognise(newVideoCreated.Id, token));
     }
 }

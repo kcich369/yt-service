@@ -15,6 +15,7 @@ public class YtVideoFileWavConfiguration : EntityConfiguration<YtVideoFileWav, Y
     protected override void ConfigureEntity(EntityTypeBuilder<YtVideoFileWav> builder)
     {
         builder.OwnsOne(x => x.PathData, ow => ow.ConfigurePathData());
+        builder.OwnsOne(x => x.Language, ow => ow.ConfigureLanguage());
 
         builder.HasOne(x => x.YtVideoFile)
             .WithOne(x => x.WavFile)

@@ -8,4 +8,7 @@ public sealed class JobsConfiguration: IConfiguration
     public bool DisableAllQueueConsumers { get; set; }
     public string JobInterval { get; set; }
     public string HangfireDashboardEndpoint { get; set; }
+    
+    public int Workers { get; set; }
+
 }

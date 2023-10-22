@@ -1,10 +1,11 @@
 ﻿using System.Text.Json;
 using Domain.Helpers;
+using Infrastructure.Helpers.Interfaces;
 using StackExchange.Redis;
 
 namespace Infrastructure.Helpers;
 
-public sealed class RedisHelper : IRedisHelper
+internal sealed class RedisHelper : IRedisHelper
 {
     private readonly IConnectionMultiplexer _connectionMultiplexer;
 

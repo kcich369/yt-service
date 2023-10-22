@@ -1,3 +1,5 @@
-﻿namespace ExternalServices.Dto;
+﻿using Domain.Enumerations;
 
-public sealed record VideoData(string Url, string Quality, string MainPath, string YtId);
+namespace ExternalServices.Dto;
+
+public sealed record VideoData(string Url, VideoQualityEnum Quality, string MainPath, string YtId);

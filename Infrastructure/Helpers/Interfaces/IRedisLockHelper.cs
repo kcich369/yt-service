@@ -1,4 +1,4 @@
-﻿namespace Domain.Helpers;
+﻿namespace Infrastructure.Helpers.Interfaces;
 
 public interface IRedisLockHelper
 {

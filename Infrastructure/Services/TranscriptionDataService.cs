@@ -7,30 +7,31 @@ using Domain.Services;
 using Domain.UnitOfWork;
 using ExternalServices.Interfaces;
 using Hangfire;
+using Infrastructure.Helpers.Interfaces;
 using ServiceBus.Producer.Messages;
 using ServiceBus.Producer.Publisher;
 
 namespace Infrastructure.Services;
 
-[DisableConcurrentExecution(timeoutInSeconds: 60)]
 public class TranscriptionDataService : ITranscriptionDataService
 {
     private readonly IYtVideoTranscriptionRepository _transcriptionRepository;
     private readonly IChatGptService _chatGptService;
-    private readonly ITranscriptionHelper _transcriptionHelper;
+    private readonly ITxtFileHelper _txtFileHelper;
     private readonly IUnitOfWork _unitOfWork;
 
     public TranscriptionDataService(IYtVideoTranscriptionRepository transcriptionRepository,
         IChatGptService chatGptService,
-        ITranscriptionHelper transcriptionHelper,
+        ITxtFileHelper txtFileHelper,
         IUnitOfWork unitOfWork)
     {
         _transcriptionRepository = transcriptionRepository;
         _chatGptService = chatGptService;
-        _transcriptionHelper = transcriptionHelper;
+        _txtFileHelper = txtFileHelper;
         _unitOfWork = unitOfWork;
     }
 
+    [DisableConcurrentExecution(timeoutInSeconds: 60)]
     public async Task<IResult<bool>> Create(YtVideoTranscriptionId ytVideoTranscriptionId, CancellationToken token)
     {
         var transcription = await _transcriptionRepository.GetToVideoDescription(ytVideoTranscriptionId, token);
@@ -38,7 +39,7 @@ public class TranscriptionDataService : ITranscriptionDataService
             return Result<bool>.Success(true);
 
         var tagsResult = await (await _chatGptService.Ask(
-                await _transcriptionHelper.GetTranscription(transcription.PathData.FullValue, token), token))
+                await _txtFileHelper.GetContents(transcription.PathData.FullValue, token), token))
             .ReturnOut(out var descriptionResult)
             .Next((des) => _chatGptService.Ask("Tags", token));
         if (tagsResult.IsError) // todo: log errors

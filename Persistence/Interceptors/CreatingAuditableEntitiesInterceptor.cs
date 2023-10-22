@@ -22,11 +22,11 @@ public sealed class CreatingAuditableEntitiesInterceptor : SaveChangesIntercepto
         var context = eventData.Context;
         if (context is null)
             return base.SavingChangesAsync(eventData, result, cancellationToken);
-        var entries = context.ChangeTracker.Entries<ICreated>();
+        var entries = context.ChangeTracker.Entries<ICreationInfo>();
         foreach (var entry in entries)
         {
             if (entry.State == EntityState.Added)
-                entry.Entity.SetCreationData(_provider.DateTimeNow(), UserId.GetUserId(), "admin");
+                entry.Entity.SetCreationInfo(_provider.DateTimeNow(), UserId.GetUserId(), "admin");
         }
 
         return base.SavingChangesAsync(eventData, result, cancellationToken);

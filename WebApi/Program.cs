@@ -28,13 +28,14 @@ var jobConf = builder.Configuration.ReturnConfigInstance<JobsConfiguration>();
 
 builder.Services
     .RegisterAllConfigurations(builder.Configuration)
-    .RegisterServiceBusProducer(builder.Configuration.ReturnConfigInstance<AzureServiceBusConfiguration>())
+    .RegisterServiceBusProducer(builder.Configuration.ReturnConfigInstance<AzureServiceConfiguration>())
     .RegisterApplication()
     .RegisterPersistence(builder.GetDatabaseConnectionString())
     .RegisterInfrastructure(builder.Configuration)
     .RegisterPresentation()
     .RegisterExternalServices()
-    .RegisterJobs(builder.GetHangfireConnectionString(), jobConf)
+    .RegisterJobs( jobConf)
+    .AddHangfire(builder.GetHangfireConnectionString(), jobConf)
     .RegisterServiceBusConsumer(jobConf);
 
 builder.Host

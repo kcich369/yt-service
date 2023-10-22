@@ -1,6 +1,6 @@
-﻿namespace Domain.Helpers;
+﻿namespace Infrastructure.Helpers.Interfaces;
 
-public interface IRedisHelper
+internal interface IRedisHelper
 {
     Task<T> GetData<T>(string key);
     Task<bool> SetData<T>(string key, T data, TimeSpan expiry);

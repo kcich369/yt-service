@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Domain.EntityIds;
+using Domain.Enumerations;
 using Domain.Helpers;
 using Domain.Services;
 using Hangfire;
@@ -22,7 +23,7 @@ public sealed class LanguageRecognisedConsumer : QueueConsumerBackgroundService
         var languageRecognised = JsonSerializer.Deserialize<LanguageRecognised>(message);
         if ((await HandleMessage(languageRecognised)).Data)
             return;
-        BackgroundJob.Enqueue<ITranscribeWavFileService>((service) =>
+        BackgroundJob.Enqueue<ITranscribeWavFileService>(HangfireQueuesEnum.Transcribing.Name, (service) =>
             service.Transcribe(languageRecognised.Id, token));
     }
 }
