@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Domain.EntityIds;
+using Domain.Enumerations;
 using Domain.Helpers;
 using Domain.Services;
 using Hangfire;
@@ -22,7 +23,7 @@ public sealed class VideoDownloadedConsumer : QueueConsumerBackgroundService
         var videoDownloaded = JsonSerializer.Deserialize<VideoDownloaded>(message);
         if ((await HandleMessage(videoDownloaded)).Data)
             return;
-        BackgroundJob.Enqueue<IConvertVideoFileToWavService>((service) =>
+        BackgroundJob.Enqueue<IConvertVideoFileToWavService>(HangfireQueuesEnum.Converting.Name,(service) =>
             service.Convert(videoDownloaded.Id, token));
     }
 }

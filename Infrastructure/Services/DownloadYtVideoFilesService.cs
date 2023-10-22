@@ -67,8 +67,7 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
         //         .LogErrorMessage(_logger);
 
         var existedQualities = ytVideo.Files.Select(x => x.Quality.Value).ToList();
-        var mainPath = MainPath(ytVideo.Channel.Name, ytVideo.Channel.YtId);
-
+        var mainPath = MainPath(ytVideo.Channel.Name, ytVideo.YtId);
         foreach (var quality in Enumeration.GetAll<VideoQualityEnum>())
         {
             if (existedQualities.Contains(quality.Name))
@@ -95,6 +94,7 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
             : Enumerable.Empty<VideoDownloaded>());
 
         await _unitOfWork.SaveChangesAsync(token);
+        Thread.Sleep(5000);
         return Result<bool>.Success(true);
     }
 

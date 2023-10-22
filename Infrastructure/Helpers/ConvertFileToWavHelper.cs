@@ -10,7 +10,7 @@ using NAudio.Wave;
 
 namespace Infrastructure.Helpers;
 
-internal sealed class ConvertFileToWavHelper : IConvertFileToWavHelper
+public sealed class ConvertFileToWavHelper : IConvertFileToWavHelper
 {
     private readonly ILogger<ConvertFileToWavHelper> _logger;
     private const string FileExtension = "wav";
