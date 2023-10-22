@@ -19,8 +19,8 @@ public abstract class QueueConsumerBackgroundService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly EventsNamesEnums _eventsNamesEnums;
-    private ILogger<QueueConsumerBackgroundService> Logger;
-    protected IMessageHelper MessageHelper;
+    private ILogger<QueueConsumerBackgroundService> _logger;
+    private IMessageHelper _messageHelper;
 
     protected QueueConsumerBackgroundService(IServiceProvider serviceProvider,
         EventsNamesEnums eventsNamesEnums)
@@ -40,7 +40,7 @@ public abstract class QueueConsumerBackgroundService : BackgroundService
             async (msg, token) =>
             {
                 var message = Encoding.UTF8.GetString(msg.Body);
-                Logger.LogInformation("Received message queue, name: {Name}, body:{Msg}", _eventsNamesEnums.Name,
+                _logger.LogInformation("Received message queue, name: {Name}, body:{Msg}", _eventsNamesEnums.Name,
                     message);
                 await Execute(message, token);
                 await subscriptionClient.CompleteAsync(msg.SystemProperties.LockToken);
@@ -53,16 +53,16 @@ public abstract class QueueConsumerBackgroundService : BackgroundService
     private void GetRequiredServices()
     {
         using var scope = _serviceProvider.CreateScope();
-        MessageHelper = scope.ServiceProvider.GetRequiredService<IMessageHelper>();
-        Logger = scope.ServiceProvider.GetRequiredService<ILogger<QueueConsumerBackgroundService>>();
+        _messageHelper = scope.ServiceProvider.GetRequiredService<IMessageHelper>();
+        _logger = scope.ServiceProvider.GetRequiredService<ILogger<QueueConsumerBackgroundService>>();
     }
 
     protected async Task<IResult<bool>> HandleMessage<TId, TPreviousId>(MessageBase<TId, TPreviousId> message)
         where TId : EntityId where TPreviousId : EntityId
     {
-        LogErrorMessageResult(await MessageHelper.PreviousOperationIsFinished(message)
+        LogErrorMessageResult(await _messageHelper.PreviousOperationIsFinished(message)
             .TryCatch());
-        var deliveringResult = await MessageHelper.Delivered(message).TryCatch();
+        var deliveringResult = await _messageHelper.Delivered(message).TryCatch();
         LogErrorMessageResult(deliveringResult);
         return deliveringResult;
     }
@@ -70,7 +70,7 @@ public abstract class QueueConsumerBackgroundService : BackgroundService
     private IResult LogErrorMessageResult(IResult result)
     {
         if (!result.IsError) return result;
-        Logger.LogError("Error occured in queue consumer: {Name}{Consumer}, error message: {ErrorMessage}",
+        _logger.LogError("Error occured in queue consumer: {Name}{Consumer}, error message: {ErrorMessage}",
             _eventsNamesEnums.Name, "Consumer", result.ErrorMessage);
         return result;
     }

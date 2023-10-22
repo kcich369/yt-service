@@ -2,7 +2,7 @@
 
 namespace Domain.Enumerations;
 
-public class SupportedLanguagesEnum : Enumeration
+public sealed class SupportedLanguagesEnum : Enumeration
 {
     public string CultureValue { get; private set; }
     public string LanguageName { get; private set; }

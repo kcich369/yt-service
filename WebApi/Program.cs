@@ -34,7 +34,8 @@ builder.Services
     .RegisterInfrastructure(builder.Configuration)
     .RegisterPresentation()
     .RegisterExternalServices()
-    .RegisterJobs(builder.GetHangfireConnectionString(), jobConf)
+    .RegisterJobs( jobConf)
+    .AddHangfire(builder.GetHangfireConnectionString(), jobConf)
     .RegisterServiceBusConsumer(jobConf);
 
 builder.Host

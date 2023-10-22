@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Domain.Enumerations;
 using Domain.Helpers;
 using Domain.Services;
 using Hangfire;
@@ -20,7 +21,7 @@ public sealed class VideoTranscribedConsumer : QueueConsumerBackgroundService
         var videoTranscribed = JsonSerializer.Deserialize<VideoTranscribed>(message);
         if ((await HandleMessage(videoTranscribed)).Data)
             return;
-        BackgroundJob.Enqueue<ITranscriptionDataService>((service) =>
+        BackgroundJob.Enqueue<ITranscriptionDataService>(HangfireQueuesEnum.TranscriptionOperations.Name, (service) =>
             service.Create(videoTranscribed.Id, token));
     }
 }
