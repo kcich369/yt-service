@@ -48,7 +48,8 @@ public sealed class ConvertVideoFileToWavService : IConvertVideoFileToWavService
             return Result<bool>.Error(ErrorTypesEnums.Validation,
                 $"Given yt video file with id {ytVideoFileId} contains improper quality value.");
 
-        var convertingResult = await _convertFileToWavHelper.ConvertFileToWav(new PathDataDto(ytVideoFile.PathData), token);
+        var convertingResult =
+            await _convertFileToWavHelper.ConvertFileToWav(new PathDataDto(ytVideoFile.PathData), token);
         if (convertingResult.IsError)
             return Result<bool>.Error(convertingResult).LogErrorMessage(_logger);
 

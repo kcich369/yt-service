@@ -13,11 +13,14 @@ public static class DependencyInjection
         string hangfireConnectionString, JobsConfiguration config)
     {
         serviceCollection.AddScoped<IChannelCreatedRetryingJob, ChannelCreatedRetryingJob>();
+        
         serviceCollection.AddScoped<ILanguageRecognisedRetryingJob, LanguageRecognisedRetryingJob>();
         serviceCollection.AddScoped<INewVideoCreatedRetryingJob, NewVideoCreatedRetryingJob>();
         serviceCollection.AddScoped<IVideoConvertedRetryingJob, VideoConvertedRetryingJob>();
+        
         serviceCollection.AddScoped<IVideoDownloadedRetryingJob, VideoDownloadedRetryingJob>();
         serviceCollection.AddScoped<IVideoTranscribedRetryingJob, VideoTranscribedRetryingJob>();
+        
         if (config.DisableAll)
             return serviceCollection;
         serviceCollection.AddHangfire(conf => conf
