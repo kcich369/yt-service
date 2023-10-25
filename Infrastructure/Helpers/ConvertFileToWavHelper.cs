@@ -1,48 +1,56 @@
-﻿using System.Diagnostics;
-using Domain.Enumerations;
+﻿using Domain.Enumerations;
+using Domain.Providers;
 using Domain.Results;
 using FFMpegCore;
 using Infrastructure.Dtos;
-using Infrastructure.Extensions;
 using Infrastructure.Helpers.Interfaces;
-using Microsoft.Extensions.Logging;
 using NAudio.Wave;
 
 namespace Infrastructure.Helpers;
 
+public static partial class ErrorMessages
+{
+    public static string ConvertingError =>
+        $"Error occurred  during converting file.";
+
+    public static string WavFileExists(string fileName) =>
+        $"Wav file with given path and name:{fileName} already exists.";
+}
+
 public sealed class ConvertFileToWavHelper : IConvertFileToWavHelper
 {
-    private readonly ILogger<ConvertFileToWavHelper> _logger;
+    private readonly IDirectoryProvider _directoryProvider;
+    private readonly IPathProvider _pathProvider;
     private const string FileExtension = "wav";
 
-    public ConvertFileToWavHelper(ILogger<ConvertFileToWavHelper> logger)
+    public ConvertFileToWavHelper(IDirectoryProvider directoryProvider,
+        IPathProvider pathProvider)
     {
-        _logger = logger;
+        _directoryProvider = directoryProvider;
+        _pathProvider = pathProvider;
     }
 
     public async Task<IResult<PathDataDto>> ConvertFileToWav(PathDataDto pathData, CancellationToken token)
     {
-        _logger.LogInformation($"Converting file with path {pathData.FullValue} is starting");
-        var stopWatch = new Stopwatch();
-        stopWatch.Start();
+        var audioFilePath = pathData.FullValue;
+        var wavPathData = pathData.ConvertTo(FileExtension);
+        if (_directoryProvider.FileExists(_pathProvider.GetRelativePath(wavPathData.FullValue)))
+            return Result<PathDataDto>.Error(ErrorTypesEnums.Validation,
+                ErrorMessages.WavFileExists(wavPathData.FileName));
+
         var result = await FFMpegArguments
-            .FromFileInput(pathData.FullValue)
+            .FromFileInput(audioFilePath)
             .OutputToFile(pathData.ConvertTo(FileExtension).FullValue, false, options => options
                 .ForceFormat(FileExtension)
                 .WithFastStart())
             .ProcessAsynchronously();
-        stopWatch.Stop();
-        _logger.LogInformation($"Convertion time: {stopWatch.Elapsed}");
 
-        if (!result)
-            return Result<PathDataDto>
-                .Error(ErrorTypesEnums.Exception, "Error occurred  during converting file").LogErrorMessage(_logger);
-
-
-
-        return Result<PathDataDto>.Success(pathData);
+        return result
+            ? Result<PathDataDto>.Success(pathData)
+            : Result<PathDataDto>.Error(ErrorTypesEnums.Exception, ErrorMessages.ConvertingError);
     }
 
+    //unused
     private async Task<bool> ConvertMp3(string _inPath_, string _outPath_)
     {
         // await using var reader =

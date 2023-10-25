@@ -25,21 +25,21 @@ static partial class ErrorMessages
 public sealed class AddChannelVideosService : IAddChannelVideosService
 {
     private readonly IYtChannelRepository _ytChannelRepository;
-    private readonly IYtService _ytService;
+    private readonly IYtChannelVideosService _ytChannelVideosService;
     private readonly ApplyingNewVideosConfiguration _configuration;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AddChannelVideosService> _logger;
     private readonly IMessagePublisher _messagePublisher;
 
     public AddChannelVideosService(IYtChannelRepository ytChannelRepository,
-        IYtService ytService,
+        IYtChannelVideosService ytChannelVideosVideosService,
         ApplyingNewVideosConfiguration configuration,
         IUnitOfWork unitOfWork,
         ILogger<AddChannelVideosService> logger,
         IMessagePublisher messagePublisher)
     {
         _ytChannelRepository = ytChannelRepository;
-        _ytService = ytService;
+        _ytChannelVideosService = ytChannelVideosVideosService;
         _configuration = configuration;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -54,7 +54,7 @@ public sealed class AddChannelVideosService : IAddChannelVideosService
             return Result<bool>.Error(ErrorTypesEnums.NotFound, ErrorMessages.ChannelNotExists(ytChannelId))
                 .LogErrorMessage(_logger);
 
-        var allVideosResult = await _ytService.GetChannelVideos(ytChannel.Url, null, token);
+        var allVideosResult = await _ytChannelVideosService.GetVideos(ytChannel.Url, null, token);
         if (allVideosResult.IsError)
             return Result<bool>.Error(allVideosResult).LogErrorMessage(_logger);
 
