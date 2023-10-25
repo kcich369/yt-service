@@ -17,7 +17,9 @@ public static class DependencyInjection
         serviceCollection.AddScoped<ISpeechConfigFactory, SpeechConfigFactory>();
         
         serviceCollection.AddScoped<IYtVideoDataMapper, YtVideoDataMapper>();
-        serviceCollection.AddScoped<IYtService, YtService>();
+        serviceCollection.AddScoped<IYtChannelService, YtChannelService>();
+        serviceCollection.AddScoped<IYtChannelVideosService, YtChannelVideosService>();
+        serviceCollection.AddScoped<IDownloadYtChannelVideoService, DownloadYtChannelVideoService>();
         serviceCollection.AddScoped<IChatGptService, ChatGptService>();
         serviceCollection.AddScoped<ITranscriptionService, TranscriptionService>();
         serviceCollection.AddScoped<ILanguageRecognitionService, LanguageRecognitionService>();

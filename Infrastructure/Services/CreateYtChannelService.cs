@@ -26,7 +26,7 @@ public sealed class CreateYtChannelService : ICreateYtChannelWithVideosService
 {
     private readonly IYtChannelRepository _ytChannelRepository;
     private readonly IPathProvider _pathProvider;
-    private readonly IYtService _ytService;
+    private readonly IYtChannelService _ytChannelService;
     private readonly IDirectoryProvider _directoryProvider;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMessagePublisher _messagePublisher;
@@ -34,7 +34,7 @@ public sealed class CreateYtChannelService : ICreateYtChannelWithVideosService
 
     public CreateYtChannelService(IYtChannelRepository ytChannelRepository,
         IPathProvider pathProvider,
-        IYtService ytService,
+        IYtChannelService ytChannelService,
         IDirectoryProvider directoryProvider,
         IUnitOfWork unitOfWork,
         IMessagePublisher messagePublisher,
@@ -42,7 +42,7 @@ public sealed class CreateYtChannelService : ICreateYtChannelWithVideosService
     {
         _ytChannelRepository = ytChannelRepository;
         _pathProvider = pathProvider;
-        _ytService = ytService;
+        _ytChannelService = ytChannelService;
         _directoryProvider = directoryProvider;
         _unitOfWork = unitOfWork;
         _messagePublisher = messagePublisher;
@@ -53,7 +53,7 @@ public sealed class CreateYtChannelService : ICreateYtChannelWithVideosService
     {
         var newChannelId = new YtChannelId();
 
-        var createChannelResult = await (await _ytService.GetChannel(handleName, true, token))
+        var createChannelResult = await (await _ytChannelService.Get(handleName, true, token))
             .ReturnOut(out var channel)
             .Next(chnlRes => Exist(chnlRes.Data.YtId, handleName, token))
             .Next((r) => _ytChannelRepository.Add(YtChannel.Create(newChannelId, channel.Data.Name,

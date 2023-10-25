@@ -30,7 +30,7 @@ public class YtChannelsController : ApiController
 
    
     [HttpGet("{id}/video-names")]
-    [SwaggerOperation(Summary = "Create yt channel", Description = "As response list of videos")]
+    [SwaggerOperation(Summary = "Get yt channel with videos list", Description = "Get yt channel with videos list")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetWithVideoNames(string id, CancellationToken token) => await Mediator

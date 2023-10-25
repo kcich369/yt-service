@@ -15,6 +15,12 @@ using ServiceBus.Producer.Publisher;
 
 namespace Infrastructure.Services;
 
+public static partial class ErrorMessages
+{
+    public static string YtVideoFileLowQuality(string ytVideoFileId) =>
+        $"Given yt video file with id {ytVideoFileId} contains improper quality value.";
+}
+
 public sealed class ConvertVideoFileToWavService : IConvertVideoFileToWavService
 {
     private readonly IYtVideoFileRepository _ytVideoFileRepository;
@@ -36,6 +42,7 @@ public sealed class ConvertVideoFileToWavService : IConvertVideoFileToWavService
         _messagePublisher = messagePublisher;
     }
 
+
     [DisableConcurrentExecution(timeoutInSeconds: 60)]
     public async Task<IResult<bool>> Convert(YtVideoFileId ytVideoFileId, CancellationToken token)
     {
@@ -43,10 +50,10 @@ public sealed class ConvertVideoFileToWavService : IConvertVideoFileToWavService
         if (ytVideoFile == null)
             return Result<bool>.Success(true);
         if (ytVideoFile.Quality != VideoQualityEnum.High)
-            return Result<bool>.Error(ErrorTypesEnums.Validation,
-                $"Given yt video file with id {ytVideoFileId} contains improper quality value.");
+            return Result<bool>.Error(ErrorTypesEnums.Validation, ErrorMessages.YtVideoFileLowQuality(ytVideoFileId));
 
-        var convertingResult = await _convertFileToWavHelper.ConvertFileToWav(new PathDataDto(ytVideoFile.PathData), token);
+        var convertingResult =
+            await _convertFileToWavHelper.ConvertFileToWav(new PathDataDto(ytVideoFile.PathData), token);
         if (convertingResult.IsError)
             return Result<bool>.Error(convertingResult).LogErrorMessage(_logger);
 
