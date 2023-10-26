@@ -61,9 +61,9 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
         if (ytVideo is null)
             return Result<bool>.Error(ErrorTypesEnums.BadRequest, ErrorMessages.YtVideoNotExists(ytVideoId))
                 .LogErrorMessage(_logger);
-        if (!ytVideo.Process)
-            return Result<bool>.Error(ErrorTypesEnums.BadRequest, ErrorMessages.DownloadingValidationError(ytVideoId))
-                .LogErrorMessage(_logger);
+        // if (!ytVideo.Process)
+        //     return Result<bool>.Error(ErrorTypesEnums.BadRequest, ErrorMessages.DownloadingValidationError(ytVideoId))
+        //         .LogErrorMessage(_logger);
 
         var existedQualities = ytVideo.Files.Select(x => x.Quality.Value).ToList();
         var mainPath = MainPath(ytVideo.Channel.Name, ytVideo.YtId);
@@ -87,11 +87,11 @@ public class DownloadYtVideoFilesService : IDownloadYtVideoFilesService
                     downloadedResult.Data.Bytes));
         }
 
-        await _messagePublisher.Send(ytVideo.Process
-            ? ytVideo.Files
-                .Where(x => !existedQualities.Contains(x.Quality.Value) && x.Quality == VideoQualityEnum.High)
-                .Select(x => new VideoDownloaded(x.Id, ytVideo.Id))
-            : Enumerable.Empty<VideoDownloaded>());
+        // await _messagePublisher.Send(ytVideo.Process
+        //     ? ytVideo.Files
+        //         .Where(x => !existedQualities.Contains(x.Quality.Value) && x.Quality == VideoQualityEnum.High)
+        //         .Select(x => new VideoDownloaded(x.Id, ytVideo.Id))
+        //     : Enumerable.Empty<VideoDownloaded>());
 
         await _unitOfWork.SaveChangesAsync(token);
         return Result<bool>.Success(true);
