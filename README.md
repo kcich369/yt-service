@@ -5,3 +5,8 @@ The application is an advanced tool that analyzes video content. By leveraging c
 Furthermore, a list of tags is created, enabling the identification of topics discussed in the videos. The application also facilitates quick and effective searching of specific content within multimedia. Users input text, which is analyzed and verified, and the application then returns specific moments in the videos related to the query. This means that users can easily locate the portions of interest in multiple videos, significantly streamlining the content analysis process.
 
 Additionally, the enhanced version of this application allows for comprehensive analysis of YouTube channels with diverse themes.
+
+# business logic
+
+The process starts from controller: ytchannels, action 'Create'.
+The brain of whole app is located in Infastructure.Services. 
