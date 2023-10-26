@@ -2,7 +2,6 @@
 using Domain.Entities;
 using Domain.EntityIds;
 using Domain.Enumerations;
-using Domain.Helpers;
 using Domain.Providers;
 using Domain.Repositories;
 using Domain.Results;
@@ -71,8 +70,7 @@ public sealed class CreateYtChannelService : ICreateYtChannelWithVideosService
 
     private async Task<IResult<bool>> Exist(string ytId, string name, CancellationToken token) =>
         await _ytChannelRepository.YtIdExists(ytId, token)
-            ? Result<bool>.Error(ErrorTypesEnums.BadRequest,
-                    ErrorMessages.ChannelAlreadyExist(name, ytId))
+            ? Result<bool>.Error(ErrorTypesEnums.BadRequest, ErrorMessages.ChannelAlreadyExist(name, ytId))
                 .LogErrorMessage(_logger)
             : Result<bool>.Success(true);
 }

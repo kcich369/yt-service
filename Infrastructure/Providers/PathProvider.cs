@@ -13,7 +13,7 @@ public sealed class PathProvider : IPathProvider
     }
 
     public string GetChannelPath(string channelName) =>
-        $"{_filesDataConfiguration.Path}{channelName}";
+        $"{_filesDataConfiguration.Path}\\{channelName}";
 
     public string GetVideoDirectoryPath(string channelPath, string ytVideDirectoryName) =>
         $"{GetChannelPath(channelPath)}\\{ytVideDirectoryName}";
