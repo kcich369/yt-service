@@ -6,7 +6,7 @@ Furthermore, a list of tags is created, enabling the identification of topics di
 
 Additionally, the enhanced version of this application allows for comprehensive analysis of YouTube channels with diverse themes.
 
-# businnes logic
+# business logic
 
 The process starts from controller: ytchannels, action 'Create'.
 The brain of whole app is located in Infastructure.Services. 
